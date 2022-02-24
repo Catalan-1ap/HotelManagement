@@ -4,4 +4,3 @@ Think about RoomType as self-contained table, not enum
 
 Create and configure WPF project with minimal output for testing EF
 
-Setup entities with FluentAPI
