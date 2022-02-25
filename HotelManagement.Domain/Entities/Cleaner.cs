@@ -1,23 +1,13 @@
 using System.Collections.Generic;
-using HotelManagement.Kernel;
-
 
 namespace HotelManagement.Domain.Entities
 {
-	public class Cleaner : IBaseEntity
+	public sealed class Cleaner : Person
 	{
-		public int Id { get; set; }
-
-		public int PersonId { get; set; }
-		public Person Person { get; set; } = null!;
-
-		public ICollection<FloorCleaner> Workdays { get; private set; } = null!;
-
-
-		public Cleaner(Person person) { Person = person; }
+		public ICollection<FloorCleaner> Workdays { get; } = null!;
 
 
 		// EF constructor
-		private Cleaner() { }
+		internal Cleaner() { }
 	}
 }

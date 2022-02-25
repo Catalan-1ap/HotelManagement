@@ -1,27 +1,20 @@
-using Ardalis.SmartEnum;
-
+using System.Collections.Generic;
+using HotelManagement.Kernel;
 
 namespace HotelManagement.Domain.Entities
 {
-	public class RoomType : SmartEnum<RoomType>
+	public sealed class RoomType : IBaseEntity
 	{
-		public static readonly RoomType Single = new("Одноместный", 1)
-		{
-			PeopleNumber = 1, PricePerDay = 1000
-		};
-		public static readonly RoomType Double = new("Двуместный", 2)
-		{
-			PeopleNumber = 2, PricePerDay = 2000
-		};
-		public static readonly RoomType Triple = new("Трехместный", 3)
-		{
-			PeopleNumber = 3, PricePerDay = 3000
-		};
-
+		public int Id { get; private set; }
+		public string Description { get; init; } = null!;
 		public int PeopleNumber { get; init; }
-		public int PricePerDay { get; init; }
+		public int PricePerDay { get; set; }
 
 
-		public RoomType(string name, int value) : base(name, value) { }
+		public ICollection<Room> Rooms { get; private set; }
+
+
+		// EF Constructor
+		internal RoomType() { }
 	}
 }
