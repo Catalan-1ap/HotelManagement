@@ -1,25 +1,19 @@
+using System.Collections.Generic;
 using HotelManagement.Kernel;
+
 
 namespace HotelManagement.Domain.Entities
 {
-	public class Person : IBaseEntity
-	{
-		public int Id { get; private set; }
+    public class Person : IBaseEntity
+    {
+        public int Id { get; set; }
 
-		public string FirstName { get; set; } = null!;
-		public string SurName { get; set; } = null!;
-		public string Patronymic { get; set; } = null!;
-
-
-		public Person(string firstName, string surName, string patronymic)
-		{
-			FirstName = firstName;
-			SurName = surName;
-			Patronymic = patronymic;
-		}
+        public string FirstName { get; set; } = null!;
+        public string SurName { get; set; } = null!;
+        public string Patronymic { get; set; } = null!;
 
 
-		// EF constructor
-		internal Person() { }
-	}
+        public ICollection<Client> Clients { get; set; } = null!;
+        public ICollection<Cleaner> Cleaners { get; set; } = null!;
+    }
 }

@@ -9,7 +9,6 @@ Used Stack:
 - Git, Github
 
 Nugets:
-- [SmartEnum](https://github.com/ardalis/SmartEnum)
 - [Bogus](https://github.com/bchavez/Bogus)
 - [FluentValidation](https://github.com/FluentValidation/FluentValidation)
 - [Stylet](https://github.com/canton7/Stylet)

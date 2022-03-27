@@ -1,3 +1,5 @@
 Seed database if empty
 
 Create and configure WPF project with minimal output for testing EF
+
+Add instruction for project startup in README.md

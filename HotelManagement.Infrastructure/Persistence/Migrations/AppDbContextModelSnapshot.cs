@@ -19,6 +19,61 @@ namespace HotelManagement.Infrastructure.Persistence.Migrations
                 .HasAnnotation("ProductVersion", "5.0.14")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("HotelManagement.Domain.Entities.Cleaner", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("Cleaners");
+                });
+
+            modelBuilder.Entity("HotelManagement.Domain.Entities.Client", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Arrival")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<bool>("IsCheckout")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Passport")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RoomId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PersonId");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("Clients");
+                });
+
             modelBuilder.Entity("HotelManagement.Domain.Entities.Floor", b =>
                 {
                     b.Property<int>("Id")
@@ -61,10 +116,6 @@ namespace HotelManagement.Infrastructure.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(90)
@@ -83,8 +134,6 @@ namespace HotelManagement.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Persons");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Person");
                 });
 
             modelBuilder.Entity("HotelManagement.Domain.Entities.Room", b =>
@@ -114,6 +163,34 @@ namespace HotelManagement.Infrastructure.Persistence.Migrations
                     b.ToTable("Rooms");
                 });
 
+            modelBuilder.Entity("HotelManagement.Domain.Entities.RoomReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DaysNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalPrice")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("RoomReport");
+                });
+
             modelBuilder.Entity("HotelManagement.Domain.Entities.RoomType", b =>
                 {
                     b.Property<int>("Id")
@@ -134,7 +211,7 @@ namespace HotelManagement.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RoomType");
+                    b.ToTable("RoomTypes");
 
                     b.HasCheckConstraint("CK_PeopleNumber", "[PeopleNumber] > 0");
 
@@ -143,35 +220,31 @@ namespace HotelManagement.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HotelManagement.Domain.Entities.Cleaner", b =>
                 {
-                    b.HasBaseType("HotelManagement.Domain.Entities.Person");
+                    b.HasOne("HotelManagement.Domain.Entities.Person", "Person")
+                        .WithMany("Cleaners")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasDiscriminator().HasValue("Cleaner");
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("HotelManagement.Domain.Entities.Client", b =>
                 {
-                    b.HasBaseType("HotelManagement.Domain.Entities.Person");
+                    b.HasOne("HotelManagement.Domain.Entities.Person", "Person")
+                        .WithMany("Clients")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<DateTime>("Arrival")
-                        .HasColumnType("datetime2");
+                    b.HasOne("HotelManagement.Domain.Entities.Room", "Room")
+                        .WithMany("Clients")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                    b.Navigation("Person");
 
-                    b.Property<string>("Passport")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<int?>("RoomId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.HasIndex("RoomId");
-
-                    b.HasDiscriminator().HasValue("Client");
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("HotelManagement.Domain.Entities.FloorCleaner", b =>
@@ -211,15 +284,33 @@ namespace HotelManagement.Infrastructure.Persistence.Migrations
                     b.Navigation("RoomType");
                 });
 
-            modelBuilder.Entity("HotelManagement.Domain.Entities.Client", b =>
+            modelBuilder.Entity("HotelManagement.Domain.Entities.RoomReport", b =>
                 {
-                    b.HasOne("HotelManagement.Domain.Entities.Room", "Room")
-                        .WithMany("Clients")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                    b.HasOne("HotelManagement.Domain.Entities.Client", "Client")
+                        .WithMany("Visits")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("HotelManagement.Domain.Entities.Room", "Room")
+                        .WithMany("Reports")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
                     b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("HotelManagement.Domain.Entities.Cleaner", b =>
+                {
+                    b.Navigation("Workdays");
+                });
+
+            modelBuilder.Entity("HotelManagement.Domain.Entities.Client", b =>
+                {
+                    b.Navigation("Visits");
                 });
 
             modelBuilder.Entity("HotelManagement.Domain.Entities.Floor", b =>
@@ -229,19 +320,23 @@ namespace HotelManagement.Infrastructure.Persistence.Migrations
                     b.Navigation("Rooms");
                 });
 
+            modelBuilder.Entity("HotelManagement.Domain.Entities.Person", b =>
+                {
+                    b.Navigation("Cleaners");
+
+                    b.Navigation("Clients");
+                });
+
             modelBuilder.Entity("HotelManagement.Domain.Entities.Room", b =>
                 {
                     b.Navigation("Clients");
+
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("HotelManagement.Domain.Entities.RoomType", b =>
                 {
                     b.Navigation("Rooms");
-                });
-
-            modelBuilder.Entity("HotelManagement.Domain.Entities.Cleaner", b =>
-                {
-                    b.Navigation("Workdays");
                 });
 #pragma warning restore 612, 618
         }
