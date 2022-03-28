@@ -2,15 +2,17 @@
 # Course project on ".NET Framework"
 
 Used Stack:
-- [Clean Architecture](https://github.com/ardalis/CleanArchitecture)
+- [Clean Architecture](https://github.com/jasontaylordev/CleanArchitecture)
 - WPF
--  Entity Framework Core
+-  Entity Framework Core (MSSQL)
 -  MVVM Pattern
 - Git, Github
 
 Nugets:
 - [Bogus](https://github.com/bchavez/Bogus)
 - [FluentValidation](https://github.com/FluentValidation/FluentValidation)
+- [Mapster](https://github.com/MapsterMapper/Mapster)
+- [MediatR](https://github.com/jbogard/MediatR)
 - [Stylet](https://github.com/canton7/Stylet)
 
 ## Description

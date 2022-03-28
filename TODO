@@ -1,5 +1,9 @@
 Seed database if empty
 
-Create and configure WPF project with minimal output for testing EF
-
 Add instruction for project startup in README.md
+
+
+
+•	принять на работу или уволить служащего гостиницы
+•	изменить расписание работы служащего
+•	поселить или выселить клиента.
