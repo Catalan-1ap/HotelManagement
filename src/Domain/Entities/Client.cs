@@ -9,16 +9,16 @@ namespace Domain.Entities;
 public sealed class Client : IBaseEntity
 {
     public int Id { get; set; }
-    public string Passport { get; set; } = null!;
-    public string City { get; set; } = null!;
+    public string? Passport { get; set; }
+    public string? City { get; set; }
     public DateTime Arrival { get; set; }
     public bool IsCheckout { get; set; }
 
     public int? RoomId { get; set; }
-    public Room Room { get; set; } = null!;
+    public Room? Room { get; set; }
 
     public int PersonId { get; set; }
-    public Person Person { get; set; } = null!;
+    public Person? Person { get; set; }
 
-    public ICollection<RoomReport> Visits { get; } = null!;
+    public ICollection<RoomReport>? Visits { get; }
 }

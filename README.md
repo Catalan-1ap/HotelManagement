@@ -1,5 +1,4 @@
-
-# Course project on ".NET Framework"
+# Course project on ".NET"
 
 Used Stack:
 - [Clean Architecture](https://github.com/jasontaylordev/CleanArchitecture)

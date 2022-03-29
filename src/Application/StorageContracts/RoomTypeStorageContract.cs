@@ -3,5 +3,5 @@
 
 public static class RoomTypeStorageContract
 {
-    public static readonly int DescriptionMaxLength = 80;
+    public const int DescriptionMaxLength = 80;
 }

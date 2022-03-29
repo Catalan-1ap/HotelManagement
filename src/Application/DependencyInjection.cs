@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Application.Behaviours;
 using FluentValidation;
-using MapsterMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,8 +14,7 @@ public static class DependencyInjection
     {
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
-
-        services.AddScoped<IMapper, ServiceMapper>();
+        
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
         return services;

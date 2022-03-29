@@ -15,7 +15,7 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext>(_ => new ApplicationDbContextFactory().Create());
 
         services.AddTransient<IDateTimeService, DateTimeService>();
-        
+
         return services;
     }
 }

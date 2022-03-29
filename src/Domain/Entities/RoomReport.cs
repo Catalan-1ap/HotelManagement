@@ -11,8 +11,8 @@ public sealed class RoomReport : IBaseEntity
     public int TotalPrice { get; set; }
 
     public int RoomId { get; set; }
-    public Room Room { get; set; } = null!;
+    public Room? Room { get; set; }
 
     public int ClientId { get; set; }
-    public Client Client { get; set; } = null!;
+    public Client? Client { get; set; }
 }

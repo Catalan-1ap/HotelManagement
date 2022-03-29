@@ -7,7 +7,7 @@ using FluentValidation.Results;
 namespace Application.Exceptions;
 
 
-public class ValidationException : Exception
+public sealed class ValidationException : Exception
 {
     public IDictionary<string, string[]> Errors { get; }
 
