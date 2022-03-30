@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.Interfaces;
 
 
-public interface IApplicationDbContext
+public interface IApplicationDbContext : IAsyncDisposable, IDisposable
 {
     DbSet<Room> Rooms { get; set; }
     DbSet<RoomReport> RoomReports { get; set; }
