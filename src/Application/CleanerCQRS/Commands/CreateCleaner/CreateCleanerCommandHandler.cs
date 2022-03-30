@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entities;
 using Mapster;
-using MapsterMapper;
 using MediatR;
 
 
@@ -15,10 +14,8 @@ public sealed class CreateCleanerCommandHandler : IRequestHandler<CreateCleanerC
     private readonly IApplicationDbContext _dbContext;
 
 
-    public CreateCleanerCommandHandler(IApplicationDbContext dbContext)
-    {
+    public CreateCleanerCommandHandler(IApplicationDbContext dbContext) =>
         _dbContext = dbContext;
-    }
 
 
     public async Task<Cleaner> Handle(CreateCleanerCommand request, CancellationToken token)

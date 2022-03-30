@@ -14,12 +14,13 @@ public sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
-    {
-        _validators = validators;
-    }
 
-    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
+    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators) =>
+        _validators = validators;
+
+
+    public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken,
+        RequestHandlerDelegate<TResponse> next)
     {
         if (_validators.Any())
         {
@@ -37,8 +38,7 @@ public sealed class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior
             if (failures.Any())
                 throw new ValidationException(failures);
         }
-        
+
         return await next();
     }
 }
-

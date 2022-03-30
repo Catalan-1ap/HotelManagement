@@ -8,13 +8,16 @@ namespace Application.UnitTests.Common;
 
 public class BaseTestHandler
 {
-    protected readonly IApplicationDbContext DbContext;
+    private readonly string _dbName;
 
 
-    public BaseTestHandler()
+    protected BaseTestHandler(string dbName)
     {
-        DbContext = MockedContext.Make;
+        _dbName = dbName;
 
         AssertionOptions.AssertEquivalencyUsing(options => options.IgnoringCyclicReferences());
     }
+
+
+    protected IApplicationDbContext GetContext() => MockedContext.Make(_dbName);
 }

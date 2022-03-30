@@ -10,7 +10,7 @@ internal class FloorCleanerConfiguration : IEntityTypeConfiguration<FloorCleaner
 {
     public void Configure(EntityTypeBuilder<FloorCleaner> builder)
     {
-        builder.HasKey(fc => new { fc.CleanerId, fc.FloorId });
+        builder.HasKey(fc => new { fc.FloorId, fc.Weekday });
 
         builder
             .HasOne(fc => fc.Floor)

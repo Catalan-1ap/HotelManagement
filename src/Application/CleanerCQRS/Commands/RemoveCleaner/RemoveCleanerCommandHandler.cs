@@ -26,7 +26,7 @@ public sealed class RemoveCleanerCommandHandler : IRequestHandler<RemoveCleanerC
 
         if (cleanerToRemove is null)
             throw new NotFoundException(nameof(Cleaner), request.Id);
-        
+
         _dbContext.Cleaners.Remove(cleanerToRemove);
         await _dbContext.SaveChangesAsync(token);
 

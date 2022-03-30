@@ -3,10 +3,8 @@ using System.Threading.Tasks;
 using Application.CleanerCQRS.Commands.CreateCleaner;
 using Application.Interfaces;
 using Application.UnitTests.Common;
-using Application.UnitTests.Mocks;
 using Domain.Entities;
 using FluentAssertions;
-using MediatR.Wrappers;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
 using Xunit;
@@ -15,14 +13,22 @@ using Xunit;
 namespace Application.UnitTests;
 
 
-public class CreateCleanerCommandTests : BaseTestHandler
+public class CreateCleanerCommandTests : BaseCleanerTestHandler
 {
+    private readonly IApplicationDbContext _dbContext;
     private readonly CreateCleanerCommandHandler _handler;
 
+    private CreateCleanerCommand MakeCommand() => new(
+        TestObject.Person!.FirstName!,
+        TestObject.Person.SurName!,
+        TestObject.Person.Patronymic!);
 
-    public CreateCleanerCommandTests()
+
+    public CreateCleanerCommandTests() : base(nameof(CreateCleanerCommand))
     {
-        _handler = new(DbContext);
+        _dbContext = GetContext();
+
+        _handler = new(_dbContext);
     }
 
 
@@ -30,7 +36,7 @@ public class CreateCleanerCommandTests : BaseTestHandler
     public async Task ShouldCreateCleaner()
     {
         // Arrange
-        var request = new CreateCleanerCommand("name", "surname", "patronymic");
+        var request = MakeCommand();
 
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
@@ -46,13 +52,13 @@ public class CreateCleanerCommandTests : BaseTestHandler
     public async Task ShouldCallAdd()
     {
         // Arrange
-        var request = new CreateCleanerCommand("name", "surname", "patronymic");
+        var request = MakeCommand();
 
         // Act
         _ = await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        DbContext.Cleaners.Received(Quantity.Exactly(1)).Add(Arg.Any<Cleaner>());
+        _dbContext.Cleaners.Received(Quantity.Exactly(1)).Add(Arg.Any<Cleaner>());
     }
 
 
@@ -60,12 +66,12 @@ public class CreateCleanerCommandTests : BaseTestHandler
     public async Task ShouldCallSaveChanges()
     {
         // Arrange
-        var request = new CreateCleanerCommand("name", "surname", "patronymic");
+        var request = MakeCommand();
 
         // Act
         _ = await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        await DbContext.Received(Quantity.Exactly(1)).SaveChangesAsync(Arg.Any<CancellationToken>());
+        await _dbContext.Received(Quantity.Exactly(1)).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

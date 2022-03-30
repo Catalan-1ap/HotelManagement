@@ -20,5 +20,5 @@ public sealed class Client : IBaseEntity
     public int PersonId { get; set; }
     public Person? Person { get; set; }
 
-    public ICollection<RoomReport>? Visits { get; }
+    public ICollection<RoomReport> Visits { get; } = new HashSet<RoomReport>();
 }
