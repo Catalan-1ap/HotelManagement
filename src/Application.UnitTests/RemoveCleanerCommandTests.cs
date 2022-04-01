@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Application.CleanerCQRS.Commands.RemoveCleaner;
+using Application.CQRS.CleanerEntity.RemoveCleaner;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.UnitTests.Common;
@@ -20,9 +20,9 @@ public class RemoveCleanerCommandTests : BaseCleanerTestHandler
     private readonly RemoveCleanerCommandHandler _handler;
 
 
-    public RemoveCleanerCommandTests() : base(nameof(RemoveCleanerCommandTests))
+    public RemoveCleanerCommandTests()
     {
-        _dbContext = GetContext();
+        _dbContext = MakeContext();
         _handler = new(_dbContext);
     }
 
@@ -74,7 +74,7 @@ public class RemoveCleanerCommandTests : BaseCleanerTestHandler
 
     private async Task<Cleaner> Add()
     {
-        var context = GetContext();
+        var context = MakeContext();
 
         context.Cleaners.Add(TestObject);
         await context.SaveChangesAsync(CancellationToken.None);

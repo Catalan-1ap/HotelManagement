@@ -1,10 +1,16 @@
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.CQRS.CleanerEntity.CreateCleaner;
+using Application.CQRS.ClientEntity.CreateClient;
 using Application.Interfaces;
 using Application.UnitTests.Common;
+using Application.UnitTests.Mocks;
 using Domain.Entities;
+using EntityFrameworkCore.Testing.NSubstitute;
 using FluentAssertions;
+using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
@@ -14,13 +20,13 @@ using Xunit;
 namespace Application.UnitTests;
 
 
-public class CreateCleanerCommandTests : BaseCleanerTestHandler
+public sealed class CreateClientCommandTests : BaseClientTestHandler
 {
     private readonly IApplicationDbContext _dbContext;
-    private readonly CreateCleanerCommandHandler _handler;
+    private readonly CreateClientCommandHandler _handler;
 
 
-    public CreateCleanerCommandTests()
+    public CreateClientCommandTests()
     {
         _dbContext = MakeContext();
 
@@ -29,7 +35,7 @@ public class CreateCleanerCommandTests : BaseCleanerTestHandler
 
 
     [Fact]
-    public async Task ShouldCreateCleaner()
+    public async Task ShouldCreate()
     {
         // Arrange
         var request = MakeCommand();
@@ -38,7 +44,7 @@ public class CreateCleanerCommandTests : BaseCleanerTestHandler
         var response = await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        (await _dbContext.Cleaners.ContainsAsync(response, CancellationToken.None)).Should().BeTrue();
+        (await _dbContext.Clients.IgnoreQueryFilters().ContainsAsync(response, CancellationToken.None)).Should().BeTrue();
     }
 
 
@@ -52,7 +58,7 @@ public class CreateCleanerCommandTests : BaseCleanerTestHandler
         _ = await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        _dbContext.Cleaners.Received(Quantity.Exactly(1)).Add(Arg.Any<Cleaner>());
+        _dbContext.Clients.Received(Quantity.Exactly(1)).Add(Arg.Any<Client>());
     }
 
 
@@ -68,10 +74,10 @@ public class CreateCleanerCommandTests : BaseCleanerTestHandler
         // Assert
         await _dbContext.Received(Quantity.Exactly(1)).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
-    
-    
-    private CreateCleanerCommand MakeCommand() => new(
-        TestObject.Person!.FirstName!,
-        TestObject.Person.SurName!,
-        TestObject.Person.Patronymic!);
+
+
+    private CreateClientCommand MakeCommand() => new(
+        TestObject.Passport,
+        TestObject.City!,
+        TestObject.Person!);
 }

@@ -5,10 +5,9 @@ using Domain.Common;
 namespace Domain.Entities;
 
 
-public sealed class Room : IBaseEntity
+public sealed class Room
 {
-    public int Id { get; set; }
-    public string? Number { get; set; }
+    public string Number { get; set; } = null!;
 
     public int? RoomTypeId { get; set; }
     public RoomType? RoomType { get; set; }

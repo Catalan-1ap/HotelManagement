@@ -1,20 +1,18 @@
 using System;
 using System.Collections.Generic;
-using Domain.Common;
 
 
 namespace Domain.Entities;
 
 
-public sealed class Client : IBaseEntity
+public sealed class Client
 {
-    public int Id { get; set; }
-    public string? Passport { get; set; }
+    public string Passport { get; set; } = null!;
     public string? City { get; set; }
-    public DateTime Arrival { get; set; }
-    public bool IsCheckout { get; set; }
+    public DateTime Arrival { get; set; } = DateTime.UtcNow;
+    public bool IsCheckout { get; set; } = true;
 
-    public int? RoomId { get; set; }
+    public string? RoomId { get; set; }
     public Room? Room { get; set; }
 
     public int PersonId { get; set; }

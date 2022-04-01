@@ -13,6 +13,8 @@ internal sealed class ClientConfiguration : IEntityTypeConfiguration<Client>
     {
         builder.HasQueryFilter(client => client.IsCheckout == false);
 
+        builder.HasKey(c => c.Passport);
+
         builder
             .Property(c => c.Passport)
             .HasMaxLength(ClientStorageContract.PassportMaxLength);

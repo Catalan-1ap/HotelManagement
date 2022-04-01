@@ -2,7 +2,7 @@
 using FluentValidation;
 
 
-namespace Application.CleanerCQRS.Commands.UpdateCleanerCommand;
+namespace Application.CQRS.CleanerEntity.UpdateCleaner;
 
 
 public class UpdateCleanerCommandValidator : AbstractValidator<UpdateCleanerCommand>

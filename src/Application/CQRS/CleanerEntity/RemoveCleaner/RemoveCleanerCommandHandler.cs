@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Application.CleanerCQRS.Commands.RemoveCleaner;
+namespace Application.CQRS.CleanerEntity.RemoveCleaner;
 
 
 public sealed class RemoveCleanerCommandHandler : IRequestHandler<RemoveCleanerCommand>

@@ -2,14 +2,12 @@
 using FluentValidation;
 
 
-namespace Application.CleanerCQRS.Commands.RemoveCleaner;
+namespace Application.CQRS.CleanerEntity.RemoveCleaner;
 
 
 public class RemoveCleanerCommandValidator : AbstractValidator<RemoveCleanerCommand>
 {
-    public RemoveCleanerCommandValidator()
-    {
+    public RemoveCleanerCommandValidator() =>
         RuleFor(c => c.Id)
             .IdMustBePositive();
-    }
 }

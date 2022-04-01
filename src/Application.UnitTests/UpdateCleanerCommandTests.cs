@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Application.CleanerCQRS.Commands.RemoveCleaner;
-using Application.CleanerCQRS.Commands.UpdateCleanerCommand;
+using Application.CQRS.CleanerEntity.UpdateCleaner;
 using Application.Exceptions;
 using Application.Interfaces;
 using Application.UnitTests.Common;
@@ -21,9 +20,9 @@ public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
     private readonly UpdateCleanerCommandHandler _handler;
 
 
-    public UpdateCleanerCommandTests() : base(nameof(UpdateCleanerCommandTests))
+    public UpdateCleanerCommandTests() 
     {
-        _dbContext = GetContext();
+        _dbContext = MakeContext();
         _handler = new(_dbContext);
     }
 
@@ -35,7 +34,7 @@ public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
         var cleanerToUpdate = await Add();
         cleanerToUpdate.Workdays.Clear();
         cleanerToUpdate.Person!.SurName = "TestSurname";
-        
+
         var request = new UpdateCleanerCommand(cleanerToUpdate);
 
         // Act
@@ -45,8 +44,8 @@ public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
         response.Should().BeEquivalentTo(request.Cleaner);
         _dbContext.Cleaners.Should().ContainSingle(c => c.Id == response.Id);
     }
-    
-    
+
+
     [Fact]
     public async Task ShouldThrowNotFoundIfDoesntExist()
     {
@@ -68,7 +67,7 @@ public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
         var cleanerToUpdate = await Add();
         cleanerToUpdate.Workdays.Clear();
         cleanerToUpdate.Person!.SurName = "TestSurname";
-        
+
         var request = new UpdateCleanerCommand(cleanerToUpdate);
 
         // Act
@@ -78,12 +77,12 @@ public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
         _dbContext.Cleaners.Received(Quantity.Exactly(1)).Update(Arg.Any<Cleaner>());
         await _dbContext.Received(Quantity.Exactly(1)).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
-    
-    
+
+
     private async Task<Cleaner> Add()
     {
-        var context = GetContext();
-
+        var context = MakeContext();
+        
         context.Cleaners.Add(TestObject);
         await context.SaveChangesAsync(CancellationToken.None);
 

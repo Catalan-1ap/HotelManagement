@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.Exceptions;
 using Application.Interfaces;
@@ -8,7 +7,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Application.CleanerCQRS.Commands.UpdateCleanerCommand;
+namespace Application.CQRS.CleanerEntity.UpdateCleaner;
 
 
 public sealed class UpdateCleanerCommandHandler : IRequestHandler<UpdateCleanerCommand, Cleaner>

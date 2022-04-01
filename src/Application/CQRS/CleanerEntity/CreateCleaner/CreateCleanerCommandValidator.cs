@@ -2,7 +2,7 @@
 using FluentValidation;
 
 
-namespace Application.CleanerCQRS.Commands.CreateCleaner;
+namespace Application.CQRS.CleanerEntity.CreateCleaner;
 
 
 public class CreateCleanerCommandValidator : AbstractValidator<CreateCleanerCommand>

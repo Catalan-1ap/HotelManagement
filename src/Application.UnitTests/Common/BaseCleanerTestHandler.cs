@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces;
+using Domain.Entities;
 using Domain.Enums;
 
 
@@ -10,7 +11,7 @@ public class BaseCleanerTestHandler : BaseTestHandler
     protected Cleaner TestObject { get; }
 
 
-    protected BaseCleanerTestHandler(string dbName) : base(dbName)
+    protected BaseCleanerTestHandler()
     {
         var cleaner = new Cleaner
         {

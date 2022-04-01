@@ -2,7 +2,7 @@
 using MediatR;
 
 
-namespace Application.CleanerCQRS.Commands.CreateCleaner;
+namespace Application.CQRS.CleanerEntity.CreateCleaner;
 
 
 public sealed record CreateCleanerCommand

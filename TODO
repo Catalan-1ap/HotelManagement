@@ -2,4 +2,6 @@ Write all commands and queries
 
 Write tests for CQRS
 
-Think about dynamic EF Core includes (collection of expressions)
+Share readonly context. It should be same as the common one, 
+but properties return IQueryable<T> instead of DbSet, also no inheritance from DbContext,
+make his own interface in Application, register in Infrastructure 

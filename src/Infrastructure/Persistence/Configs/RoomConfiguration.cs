@@ -12,6 +12,9 @@ internal sealed class RoomConfiguration : IEntityTypeConfiguration<Room>
     public void Configure(EntityTypeBuilder<Room> builder)
     {
         builder
+            .HasKey(r => r.Number);
+        
+        builder
             .Property(r => r.Number)
             .HasMaxLength(RoomStorageContract.NumberMaxLength);
 
