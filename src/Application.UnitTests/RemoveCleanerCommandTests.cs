@@ -14,7 +14,7 @@ using Xunit;
 namespace Application.UnitTests;
 
 
-public class RemoveCleanerCommandTests : BaseCleanerTestHandler
+public class RemoveCleanerCommandTests : BaseTestHandler
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly RemoveCleanerCommandHandler _handler;
@@ -31,14 +31,23 @@ public class RemoveCleanerCommandTests : BaseCleanerTestHandler
     public async Task ShouldRemoveWhenExist()
     {
         // Arrange
-        var added = await Add();
-        var request = new RemoveCleanerCommand(added.Id);
+        var cleaner = new Cleaner()
+        {
+            Person = new()
+            {
+                FirstName = "F",
+                SurName = "S",
+                Patronymic = "P"
+            }
+        };
+        await Add(cleaner);
+        var request = new RemoveCleanerCommand(cleaner.Id);
 
         // Act
         await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        _dbContext.Cleaners.Should().NotContain(added);
+        _dbContext.Cleaners.Should().NotContain(cleaner);
     }
 
 
@@ -60,8 +69,17 @@ public class RemoveCleanerCommandTests : BaseCleanerTestHandler
     public async Task ShouldCallRemoveAndSaveChanges()
     {
         // Arrange
-        var added = await Add();
-        var request = new RemoveCleanerCommand(added.Id);
+        var cleaner = new Cleaner()
+        {
+            Person = new()
+            {
+                FirstName = "F",
+                SurName = "S",
+                Patronymic = "P"
+            }
+        };
+        await Add(cleaner);
+        var request = new RemoveCleanerCommand(cleaner.Id);
 
         // Act
         await _handler.Handle(request, CancellationToken.None);
@@ -72,13 +90,11 @@ public class RemoveCleanerCommandTests : BaseCleanerTestHandler
     }
 
 
-    private async Task<Cleaner> Add()
+    private async Task Add(Cleaner cleaner)
     {
         var context = MakeContext();
 
-        context.Cleaners.Add(TestObject);
+        context.Cleaners.Add(cleaner);
         await context.SaveChangesAsync(CancellationToken.None);
-
-        return TestObject;
     }
 }

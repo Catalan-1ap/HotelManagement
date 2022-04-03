@@ -25,7 +25,6 @@ public sealed class CreateClientCommandHandler : IRequestHandler<CreateClientCom
         var client = new Client
         {
             Passport = request.Passport,
-            City = request.City,
             Person = request.Person
         };
 

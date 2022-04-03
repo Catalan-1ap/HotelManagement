@@ -5,5 +5,4 @@ using MediatR;
 namespace Application.CQRS.ClientEntity.CreateClient;
 
 
-public sealed record CreateClientCommand
-    (string Passport, string City, Person Person) : IRequest<Client>;
+public sealed record CreateClientCommand(string Passport, Person Person) : IRequest<Client>;

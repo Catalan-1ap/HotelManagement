@@ -14,7 +14,7 @@ using Xunit;
 namespace Application.UnitTests;
 
 
-public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
+public sealed class UpdateCleanerCommandTests : BaseTestHandler
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly UpdateCleanerCommandHandler _handler;
@@ -31,11 +31,20 @@ public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
     public async Task ShouldUpdateWhenExist()
     {
         // Arrange
-        var cleanerToUpdate = await Add();
-        cleanerToUpdate.Workdays.Clear();
-        cleanerToUpdate.Person!.SurName = "TestSurname";
+        var cleaner = new Cleaner()
+        {
+            Person = new()
+            {
+                FirstName = "F",
+                SurName = "S",
+                Patronymic = "P"
+            }
+        };
+        await Add(cleaner);
+        cleaner.Workdays.Clear();
+        cleaner.Person!.SurName = "TestSurname";
 
-        var request = new UpdateCleanerCommand(cleanerToUpdate);
+        var request = new UpdateCleanerCommand(cleaner);
 
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
@@ -50,7 +59,16 @@ public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
     public async Task ShouldThrowNotFoundIfDoesntExist()
     {
         // Arrange
-        var request = new UpdateCleanerCommand(TestObject);
+        var cleaner = new Cleaner()
+        {
+            Person = new()
+            {
+                FirstName = "F",
+                SurName = "S",
+                Patronymic = "P"
+            }
+        };
+        var request = new UpdateCleanerCommand(cleaner);
 
         // Act
         var act = async () => await _handler.Handle(request, CancellationToken.None);
@@ -64,11 +82,20 @@ public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
     public async Task ShouldCallUpdateAndSaveChanges()
     {
         // Arrange
-        var cleanerToUpdate = await Add();
-        cleanerToUpdate.Workdays.Clear();
-        cleanerToUpdate.Person!.SurName = "TestSurname";
+        var cleaner = new Cleaner()
+        {
+            Person = new()
+            {
+                FirstName = "F",
+                SurName = "S",
+                Patronymic = "P"
+            }
+        };
+        await Add(cleaner);
+        cleaner.Workdays.Clear();
+        cleaner.Person!.SurName = "TestSurname";
 
-        var request = new UpdateCleanerCommand(cleanerToUpdate);
+        var request = new UpdateCleanerCommand(cleaner);
 
         // Act
         await _handler.Handle(request, CancellationToken.None);
@@ -79,13 +106,11 @@ public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
     }
 
 
-    private async Task<Cleaner> Add()
+    private async Task Add(Cleaner cleaner)
     {
         var context = MakeContext();
 
-        context.Cleaners.Add(TestObject);
+        context.Cleaners.Add(cleaner);
         await context.SaveChangesAsync(CancellationToken.None);
-
-        return TestObject;
     }
 }

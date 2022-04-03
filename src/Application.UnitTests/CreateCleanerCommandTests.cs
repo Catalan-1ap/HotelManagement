@@ -14,7 +14,7 @@ using Xunit;
 namespace Application.UnitTests;
 
 
-public class CreateCleanerCommandTests : BaseCleanerTestHandler
+public class CreateCleanerCommandTests : BaseTestHandler
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly CreateCleanerCommandHandler _handler;
@@ -32,7 +32,7 @@ public class CreateCleanerCommandTests : BaseCleanerTestHandler
     public async Task ShouldCreateCleaner()
     {
         // Arrange
-        var request = MakeCommand();
+        var request = new CreateCleanerCommand("F", "S", "P");
 
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
@@ -46,7 +46,7 @@ public class CreateCleanerCommandTests : BaseCleanerTestHandler
     public async Task ShouldCallAdd()
     {
         // Arrange
-        var request = MakeCommand();
+        var request = new CreateCleanerCommand("F", "S", "P");
 
         // Act
         _ = await _handler.Handle(request, CancellationToken.None);
@@ -60,7 +60,7 @@ public class CreateCleanerCommandTests : BaseCleanerTestHandler
     public async Task ShouldCallSaveChanges()
     {
         // Arrange
-        var request = MakeCommand();
+        var request = new CreateCleanerCommand("F", "S", "P");
 
         // Act
         _ = await _handler.Handle(request, CancellationToken.None);
@@ -68,11 +68,4 @@ public class CreateCleanerCommandTests : BaseCleanerTestHandler
         // Assert
         await _dbContext.Received(Quantity.Exactly(1)).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
-
-
-    private CreateCleanerCommand MakeCommand() =>
-        new(
-            TestObject.Person!.FirstName!,
-            TestObject.Person.SurName!,
-            TestObject.Person.Patronymic!);
 }

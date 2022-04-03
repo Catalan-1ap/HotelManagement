@@ -30,6 +30,7 @@ public sealed class CheckInClientCommandHandler : IRequestHandler<CheckInClientC
         var room = await TryGetRoom(request.RoomNumber, request.Passport, token);
 
         client.IsCheckout = false;
+        client.City = request.City;
         client.Arrival = _dateTimeService.UtcNow;
         client.Room = room;
 
@@ -63,7 +64,6 @@ public sealed class CheckInClientCommandHandler : IRequestHandler<CheckInClientC
             .Select(r => new
             {
                 Room = r,
-                // WARNING: Possible "InvalidOperationException", can EF Core translate Count property?
                 ResidentsNumber = r.Clients.Count,
                 MaximumResidents = r.RoomType!.MaxPeopleNumber
             })

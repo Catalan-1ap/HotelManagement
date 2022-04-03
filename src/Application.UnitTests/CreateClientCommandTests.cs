@@ -14,7 +14,7 @@ using Xunit;
 namespace Application.UnitTests;
 
 
-public sealed class CreateClientCommandTests : BaseClientTestHandler
+public sealed class CreateClientCommandTests : BaseTestHandler
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly CreateClientCommandHandler _handler;
@@ -32,7 +32,13 @@ public sealed class CreateClientCommandTests : BaseClientTestHandler
     public async Task ShouldCreate()
     {
         // Arrange
-        var request = MakeCommand();
+        var request = new CreateClientCommand("Passport",
+            new()
+            {
+                FirstName = "F",
+                SurName = "S",
+                Patronymic = "P"
+            });
 
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
@@ -47,7 +53,13 @@ public sealed class CreateClientCommandTests : BaseClientTestHandler
     public async Task ShouldCallAdd()
     {
         // Arrange
-        var request = MakeCommand();
+        var request = new CreateClientCommand("Passport",
+            new()
+            {
+                FirstName = "F",
+                SurName = "S",
+                Patronymic = "P"
+            });
 
         // Act
         _ = await _handler.Handle(request, CancellationToken.None);
@@ -61,7 +73,13 @@ public sealed class CreateClientCommandTests : BaseClientTestHandler
     public async Task ShouldCallSaveChanges()
     {
         // Arrange
-        var request = MakeCommand();
+        var request = new CreateClientCommand("Passport",
+            new()
+            {
+                FirstName = "F",
+                SurName = "S",
+                Patronymic = "P"
+            });
 
         // Act
         _ = await _handler.Handle(request, CancellationToken.None);
@@ -69,11 +87,4 @@ public sealed class CreateClientCommandTests : BaseClientTestHandler
         // Assert
         await _dbContext.Received(Quantity.Exactly(1)).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
-
-
-    private CreateClientCommand MakeCommand() =>
-        new(
-            TestClient.Passport,
-            TestClient.City!,
-            TestClient.Person!);
 }
