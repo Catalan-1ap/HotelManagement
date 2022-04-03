@@ -6,23 +6,25 @@ namespace Application.UnitTests.Common;
 
 public class BaseClientTestHandler : BaseTestHandler
 {
-    protected Client TestObject { get; }
+    protected Client TestClient { get; }
+    protected Room TestRoom { get; }
 
 
-    protected BaseClientTestHandler() 
+    protected BaseClientTestHandler()
     {
-        var client = new Client
+        TestClient = new()
         {
-            Person = new()
-            {
-                FirstName = "firstname",
-                SurName = "surname",
-                Patronymic = "patronymic"
-            },
             City = "City",
-            Passport = "Passport",
+            Passport = "Passport"
         };
-        
-        TestObject = client;
+
+        TestRoom = new()
+        {
+            Number = "42",
+            RoomType = new()
+            {
+                MaxPeopleNumber = 1
+            },
+        };
     }
 }

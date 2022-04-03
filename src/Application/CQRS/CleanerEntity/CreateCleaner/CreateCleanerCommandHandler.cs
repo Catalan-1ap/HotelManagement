@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Domain.Entities;
-using Mapster;
 using MediatR;
 
 
@@ -14,15 +13,19 @@ public sealed class CreateCleanerCommandHandler : IRequestHandler<CreateCleanerC
     private readonly IApplicationDbContext _dbContext;
 
 
-    public CreateCleanerCommandHandler(IApplicationDbContext dbContext) =>
-        _dbContext = dbContext;
+    public CreateCleanerCommandHandler(IApplicationDbContext dbContext) => _dbContext = dbContext;
 
 
     public async Task<Cleaner> Handle(CreateCleanerCommand request, CancellationToken token)
     {
         var newCleaner = new Cleaner
         {
-            Person = request.Adapt<Person>()
+            Person = new()
+            {
+                FirstName = request.FirstName,
+                SurName = request.SurName,
+                Patronymic = request.Patronymic
+            }
         };
 
         _dbContext.Cleaners.Add(newCleaner);

@@ -1,16 +1,10 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Application.CQRS.CleanerEntity.CreateCleaner;
 using Application.CQRS.ClientEntity.CreateClient;
 using Application.Interfaces;
 using Application.UnitTests.Common;
-using Application.UnitTests.Mocks;
 using Domain.Entities;
-using EntityFrameworkCore.Testing.NSubstitute;
 using FluentAssertions;
-using FluentValidation;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
@@ -44,7 +38,8 @@ public sealed class CreateClientCommandTests : BaseClientTestHandler
         var response = await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        (await _dbContext.Clients.IgnoreQueryFilters().ContainsAsync(response, CancellationToken.None)).Should().BeTrue();
+        (await _dbContext.Clients.IgnoreQueryFilters().ContainsAsync(response, CancellationToken.None)).Should()
+            .BeTrue();
     }
 
 
@@ -76,8 +71,9 @@ public sealed class CreateClientCommandTests : BaseClientTestHandler
     }
 
 
-    private CreateClientCommand MakeCommand() => new(
-        TestObject.Passport,
-        TestObject.City!,
-        TestObject.Person!);
+    private CreateClientCommand MakeCommand() =>
+        new(
+            TestClient.Passport,
+            TestClient.City!,
+            TestClient.Person!);
 }

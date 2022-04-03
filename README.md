@@ -12,7 +12,6 @@ Used Stack:
 - [Bogus](https://github.com/bchavez/Bogus)
 - [FluentValidation](https://github.com/FluentValidation/FluentValidation)
 - [FluentAssertions](https://github.com/fluentassertions/fluentassertions)
-- [Mapster](https://github.com/MapsterMapper/Mapster)
 - [MediatR](https://github.com/jbogard/MediatR)
 - [Stylet](https://github.com/canton7/Stylet)
 

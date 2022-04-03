@@ -68,10 +68,11 @@ public class CreateCleanerCommandTests : BaseCleanerTestHandler
         // Assert
         await _dbContext.Received(Quantity.Exactly(1)).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
-    
-    
-    private CreateCleanerCommand MakeCommand() => new(
-        TestObject.Person!.FirstName!,
-        TestObject.Person.SurName!,
-        TestObject.Person.Patronymic!);
+
+
+    private CreateCleanerCommand MakeCommand() =>
+        new(
+            TestObject.Person!.FirstName!,
+            TestObject.Person.SurName!,
+            TestObject.Person.Patronymic!);
 }

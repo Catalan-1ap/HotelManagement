@@ -1,5 +1,4 @@
-﻿using System;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Entities;
 using EntityFrameworkCore.Testing.NSubstitute;
 using Infrastructure.Persistence;
@@ -40,7 +39,7 @@ public class MockedContext : DbContext, IApplicationDbContext
 
         // Ignore query filter
         modelBuilder.Entity<Client>().HasQueryFilter(c => true);
-        
+
         base.OnModelCreating(modelBuilder);
     }
 }

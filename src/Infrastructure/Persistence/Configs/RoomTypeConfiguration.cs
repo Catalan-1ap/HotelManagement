@@ -16,8 +16,8 @@ internal sealed class RoomTypeConfiguration : IEntityTypeConfiguration<RoomType>
             .HasMaxLength(RoomTypeStorageContract.DescriptionMaxLength);
 
         builder.HasCheckConstraint(
-            $"CK_{nameof(RoomType.PeopleNumber)}",
-            $"[{nameof(RoomType.PeopleNumber)}] > 0");
+            $"CK_{nameof(RoomType.MaxPeopleNumber)}",
+            $"[{nameof(RoomType.MaxPeopleNumber)}] > 0");
 
         builder.HasCheckConstraint(
             $"CK_{nameof(RoomType.PricePerDay)}",

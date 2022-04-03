@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Application.Exceptions;
 using Application.Interfaces;
 using Domain.Entities;
-using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,20 +14,37 @@ public sealed class CreateClientCommandHandler : IRequestHandler<CreateClientCom
 {
     private readonly IApplicationDbContext _dbContext;
 
-    
-    public CreateClientCommandHandler(IApplicationDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+
+    public CreateClientCommandHandler(IApplicationDbContext dbContext) => _dbContext = dbContext;
 
 
     public async Task<Client> Handle(CreateClientCommand request, CancellationToken token)
     {
-        var client = request.Adapt<Client>();
-        
+        await ThrowIfPassportAlreadyExists(request.Passport, token);
+
+        var client = new Client
+        {
+            Passport = request.Passport,
+            City = request.City,
+            Person = request.Person
+        };
+
         _dbContext.Clients.Add(client);
         await _dbContext.SaveChangesAsync(token);
 
         return client;
     }
+
+
+    private async Task ThrowIfPassportAlreadyExists(string passport, CancellationToken token)
+    {
+        var isPassportNotExists = await IsSamePassportNotAlreadyExists(passport, token);
+
+        if (isPassportNotExists == false)
+            throw new ClientWithPassportAlreadyExistsException(passport);
+    }
+
+
+    private Task<bool> IsSamePassportNotAlreadyExists(string passport, CancellationToken token) =>
+        _dbContext.Clients.AllAsync(c => c.Passport != passport, token);
 }

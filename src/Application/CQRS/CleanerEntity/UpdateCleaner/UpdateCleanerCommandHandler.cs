@@ -15,8 +15,7 @@ public sealed class UpdateCleanerCommandHandler : IRequestHandler<UpdateCleanerC
     private readonly IApplicationDbContext _dbContext;
 
 
-    public UpdateCleanerCommandHandler(IApplicationDbContext dbContext) =>
-        _dbContext = dbContext;
+    public UpdateCleanerCommandHandler(IApplicationDbContext dbContext) => _dbContext = dbContext;
 
 
     public async Task<Cleaner> Handle(UpdateCleanerCommand request, CancellationToken token)

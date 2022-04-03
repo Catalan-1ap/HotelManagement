@@ -20,7 +20,7 @@ public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
     private readonly UpdateCleanerCommandHandler _handler;
 
 
-    public UpdateCleanerCommandTests() 
+    public UpdateCleanerCommandTests()
     {
         _dbContext = MakeContext();
         _handler = new(_dbContext);
@@ -82,7 +82,7 @@ public sealed class UpdateCleanerCommandTests : BaseCleanerTestHandler
     private async Task<Cleaner> Add()
     {
         var context = MakeContext();
-        
+
         context.Cleaners.Add(TestObject);
         await context.SaveChangesAsync(CancellationToken.None);
 

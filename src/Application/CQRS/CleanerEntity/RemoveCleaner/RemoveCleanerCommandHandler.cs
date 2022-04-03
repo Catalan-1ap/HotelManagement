@@ -15,8 +15,7 @@ public sealed class RemoveCleanerCommandHandler : IRequestHandler<RemoveCleanerC
     private readonly IApplicationDbContext _dbContext;
 
 
-    public RemoveCleanerCommandHandler(IApplicationDbContext dbContext) =>
-        _dbContext = dbContext;
+    public RemoveCleanerCommandHandler(IApplicationDbContext dbContext) => _dbContext = dbContext;
 
 
     public async Task<Unit> Handle(RemoveCleanerCommand request, CancellationToken token)

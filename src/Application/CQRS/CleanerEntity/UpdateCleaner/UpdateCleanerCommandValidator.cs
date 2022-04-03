@@ -9,19 +9,14 @@ public class UpdateCleanerCommandValidator : AbstractValidator<UpdateCleanerComm
 {
     public UpdateCleanerCommandValidator()
     {
-        RuleFor(c => c.Cleaner.Id)
-            .IdMustBePositive();
+        RuleFor(c => c.Cleaner.Id).IdMustBePositive();
 
-        RuleFor(c => c.Cleaner.Person)!
-            .PersonMustNotBeNull();
+        RuleFor(c => c.Cleaner.Person)!.PersonMustNotBeNull();
 
-        RuleFor(c => c.Cleaner.Person!.FirstName)
-            !.FirstNameRule();
+        RuleFor(c => c.Cleaner.Person!.FirstName)!.FirstNameRule();
 
-        RuleFor(c => c.Cleaner.Person!.SurName)
-            !.SurNameRule();
+        RuleFor(c => c.Cleaner.Person!.SurName)!.SurNameRule();
 
-        RuleFor(c => c.Cleaner.Person!.Patronymic)
-            !.PatronymicRule();
+        RuleFor(c => c.Cleaner.Person!.Patronymic)!.PatronymicRule();
     }
 }

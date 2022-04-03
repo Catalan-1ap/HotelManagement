@@ -9,7 +9,7 @@ public sealed class Client
 {
     public string Passport { get; set; } = null!;
     public string? City { get; set; }
-    public DateTime Arrival { get; set; } = DateTime.UtcNow;
+    public DateTime? Arrival { get; set; } = null;
     public bool IsCheckout { get; set; } = true;
 
     public string? RoomId { get; set; }
