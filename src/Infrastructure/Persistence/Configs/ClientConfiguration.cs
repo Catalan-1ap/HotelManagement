@@ -11,8 +11,6 @@ internal sealed class ClientConfiguration : IEntityTypeConfiguration<Client>
 {
     public void Configure(EntityTypeBuilder<Client> builder)
     {
-        builder.HasQueryFilter(client => client.IsCheckout == false);
-
         builder.HasKey(c => c.Passport);
 
         builder

@@ -40,32 +40,4 @@ public class CreateCleanerCommandTests : BaseTestHandler
         // Assert
         (await _dbContext.Cleaners.ContainsAsync(response, CancellationToken.None)).Should().BeTrue();
     }
-
-
-    [Fact]
-    public async Task ShouldCallAdd()
-    {
-        // Arrange
-        var request = new CreateCleanerCommand("F", "S", "P");
-
-        // Act
-        _ = await _handler.Handle(request, CancellationToken.None);
-
-        // Assert
-        _dbContext.Cleaners.Received(Quantity.Exactly(1)).Add(Arg.Any<Cleaner>());
-    }
-
-
-    [Fact]
-    public async Task ShouldCallSaveChanges()
-    {
-        // Arrange
-        var request = new CreateCleanerCommand("F", "S", "P");
-
-        // Act
-        _ = await _handler.Handle(request, CancellationToken.None);
-
-        // Assert
-        await _dbContext.Received(Quantity.Exactly(1)).SaveChangesAsync(Arg.Any<CancellationToken>());
-    }
 }

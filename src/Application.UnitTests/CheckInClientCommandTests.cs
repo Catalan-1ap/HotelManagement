@@ -8,7 +8,7 @@ using Application.Interfaces;
 using Application.UnitTests.Common;
 using Domain.Entities;
 using FluentAssertions;
-using Infrastructure.Services;
+using NSubstitute.ReceivedExtensions;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using Xunit;
@@ -58,10 +58,7 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
 
         // Assert
         client = _dbContext.Clients.Should().Contain(c => c.Passport == request.Passport).Which;
-        client.Arrival.Should()
-            .NotBeNull()
-            .And
-            .Be(_dateTimeService.UtcNow);
+        client.Arrival.Should().Be(_dateTimeService.UtcNow);
         client.City.Should()
             .NotBeNull()
             .And
@@ -113,37 +110,6 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
         (await act.Should().ThrowAsync<NotFoundException>())
             .Where(e => e.EntityName == nameof(Client))
             .Where(e => (string)e.Key == request.Passport);
-    }
-
-
-    [Fact]
-    public async Task ShouldThrowWhenClientAlreadyCheckedIn()
-    {
-        // Arrange
-        var client = new Client
-        {
-            Passport = "Passport",
-            IsCheckout = false
-        };
-        await AddClient(client.Passport);
-        var room = new Room
-        {
-            Number = "105",
-            RoomType = new()
-            {
-                MaxPeopleNumber = 1
-            }
-        };
-        await AddRoom(room);
-        var request = new CheckInClientCommand(client.Passport, "City", room.Number);
-
-        // Act
-        var act = async () => await _handler.Handle(request, CancellationToken.None);
-        await act.Invoke();
-
-        // Assert
-        (await act.Should().ThrowAsync<ClientAlreadyCheckedInException>())
-            .Where(e => e.Passport == request.Passport);
     }
 
 

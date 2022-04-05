@@ -21,7 +21,7 @@ internal sealed class RoomReportConfiguration : IEntityTypeConfiguration<RoomRep
             .HasOne(r => r.Client)
             .WithMany(c => c.Visits)
             .HasForeignKey(c => c.ClientId)
-            .IsRequired(false)
+            .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -44,47 +44,7 @@ public sealed class CreateClientCommandTests : BaseTestHandler
         var response = await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        (await _dbContext.Clients.IgnoreQueryFilters().ContainsAsync(response, CancellationToken.None)).Should()
+        (await _dbContext.Clients.ContainsAsync(response, CancellationToken.None)).Should()
             .BeTrue();
-    }
-
-
-    [Fact]
-    public async Task ShouldCallAdd()
-    {
-        // Arrange
-        var request = new CreateClientCommand("Passport",
-            new()
-            {
-                FirstName = "F",
-                SurName = "S",
-                Patronymic = "P"
-            });
-
-        // Act
-        _ = await _handler.Handle(request, CancellationToken.None);
-
-        // Assert
-        _dbContext.Clients.Received(Quantity.Exactly(1)).Add(Arg.Any<Client>());
-    }
-
-
-    [Fact]
-    public async Task ShouldCallSaveChanges()
-    {
-        // Arrange
-        var request = new CreateClientCommand("Passport",
-            new()
-            {
-                FirstName = "F",
-                SurName = "S",
-                Patronymic = "P"
-            });
-
-        // Act
-        _ = await _handler.Handle(request, CancellationToken.None);
-
-        // Assert
-        await _dbContext.Received(Quantity.Exactly(1)).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 }

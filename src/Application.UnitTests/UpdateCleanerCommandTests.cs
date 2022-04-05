@@ -77,35 +77,7 @@ public sealed class UpdateCleanerCommandTests : BaseTestHandler
         await act.Should().ThrowAsync<NotFoundException>();
     }
 
-
-    [Fact]
-    public async Task ShouldCallUpdateAndSaveChanges()
-    {
-        // Arrange
-        var cleaner = new Cleaner()
-        {
-            Person = new()
-            {
-                FirstName = "F",
-                SurName = "S",
-                Patronymic = "P"
-            }
-        };
-        await Add(cleaner);
-        cleaner.Workdays.Clear();
-        cleaner.Person!.SurName = "TestSurname";
-
-        var request = new UpdateCleanerCommand(cleaner);
-
-        // Act
-        await _handler.Handle(request, CancellationToken.None);
-
-        // Assert
-        _dbContext.Cleaners.Received(Quantity.Exactly(1)).Update(Arg.Any<Cleaner>());
-        await _dbContext.Received(Quantity.Exactly(1)).SaveChangesAsync(Arg.Any<CancellationToken>());
-    }
-
-
+    
     private async Task Add(Cleaner cleaner)
     {
         var context = MakeContext();

@@ -64,32 +64,6 @@ public class RemoveCleanerCommandTests : BaseTestHandler
         await act.Should().ThrowAsync<NotFoundException>();
     }
 
-
-    [Fact]
-    public async Task ShouldCallRemoveAndSaveChanges()
-    {
-        // Arrange
-        var cleaner = new Cleaner()
-        {
-            Person = new()
-            {
-                FirstName = "F",
-                SurName = "S",
-                Patronymic = "P"
-            }
-        };
-        await Add(cleaner);
-        var request = new RemoveCleanerCommand(cleaner.Id);
-
-        // Act
-        await _handler.Handle(request, CancellationToken.None);
-
-        // Assert
-        _dbContext.Cleaners.Received(Quantity.Exactly(1)).Remove(Arg.Any<Cleaner>());
-        await _dbContext.Received(Quantity.Exactly(1)).SaveChangesAsync(Arg.Any<CancellationToken>());
-    }
-
-
     private async Task Add(Cleaner cleaner)
     {
         var context = MakeContext();

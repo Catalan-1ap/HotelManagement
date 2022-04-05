@@ -43,13 +43,11 @@ public sealed class CheckInClientCommandHandler : IRequestHandler<CheckInClientC
     private async Task<Client> TryGetClient(string passport, CancellationToken token)
     {
         var client = await _dbContext.Clients
+            .Where(Client.CanCheckIn)
             .SingleOrDefaultAsync(c => c.Passport == passport, token);
 
         if (client is null)
             throw new NotFoundException(nameof(Client), passport);
-
-        if (client.IsCheckout == false)
-            throw new ClientAlreadyCheckedInException(client.Passport);
 
         return client;
     }
