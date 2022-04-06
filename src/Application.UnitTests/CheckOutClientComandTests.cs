@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,57 +32,85 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
         _dateTimeService.UtcNow.Returns(new DateTime(2003, 2, 26));
         _handler = new(_dbContext, _dateTimeService);
     }
+    
 
-
+    
     [Fact]
-    public async Task ShouldCheckOutWhenAllAlright()
+    public async Task ShouldsetCorrectTotalPriceAndElapsedDays()
     {
         // Arrange
-        var client = new Client
-        {
-            Passport = "Passport"
-        };
-        await AddClient(client.Passport);
-        var room = new Room
-        {
-            Number = "105",
-            RoomType = new()
-            {
-                MaxPeopleNumber = 1,
-                PricePerDay = 10
-            }
-        };
-        await AddRoom(room);
-        await CheckInClient(client.Passport, "City", room.Number);
-
+        var (room, clients) = await AddRoomWithClients();
+        var payer = clients.First();
+        var request = new CheckOutClientCommand(payer.Passport);
+        
         var elapsedDays = 4;
         _dateTimeService.UtcNow.Returns(_dateTimeService.UtcNow.AddDays(elapsedDays));
-        var request = new CheckOutClientCommand(client.Passport);
-
+        
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
-
+        
         // Assert
-        var clientAssertion = _dbContext.Clients
-            .Should()
-            .ContainSingle(c => c.Passport == client.Passport)
-            .Subject;
-        clientAssertion.IsCheckout.Should().BeTrue();
-        clientAssertion.Room.Should().BeNull();
-
+        var report = _dbContext.RoomReports.Should().Contain(response).Subject;
+        report.DaysNumber.Should().Be(elapsedDays);
+        report.TotalPrice.Should().Be(room.RoomType!.PricePerDay * elapsedDays);
+    }
+    
+    
+    [Fact]
+    public async Task ShouldCreateReportForPayerWithRoom()
+    {
+        // Arrange
+        var (room, clients) = await AddRoomWithClients();
+        var payer = clients.First();
+        var request = new CheckOutClientCommand(payer.Passport);
+        
+        // Act
+        var response = await _handler.Handle(request, CancellationToken.None);
+        
+        // Assert
         var report = _dbContext.RoomReports.Should().Contain(response).Subject;
         report.Client.Should()
             .NotBeNull()
             .And
-            .Match<Client>(c => c.Passport == client.Passport);
+            .Match<Client>(c => c.Passport == payer.Passport);
         report.Room.Should()
             .NotBeNull()
             .And
             .Match<Room>(r => r.Number == room.Number);
-        report.DaysNumber.Should().Be(elapsedDays);
-        report.TotalPrice.Should().Be(room.RoomType.PricePerDay * elapsedDays);
     }
+    
 
+    [Fact]
+    public async Task ShouldCheckoutPayerParty()
+    {
+        // Arrange
+        var (room, clients) = await AddRoomWithClients();
+        var payer = clients.First();
+        var request = new CheckOutClientCommand(payer.Passport);
+        
+        // Act
+        var _ = await _handler.Handle(request, CancellationToken.None);
+        
+        // Assert
+        _dbContext.Clients.Should().OnlyContain(c => c.IsCheckout);
+    }
+    
+    
+    [Fact]
+    public async Task ShouldSetRoomRelationshipToNull()
+    {
+        // Arrange
+        var (room, clients) = await AddRoomWithClients();
+        var payer = clients.First();
+        var request = new CheckOutClientCommand(payer.Passport);
+        
+        // Act
+        var _ = await _handler.Handle(request, CancellationToken.None);
+        
+        // Assert
+        _dbContext.Clients.Should().OnlyContain(c => c.Room == null);
+    }
+    
 
     [Fact]
     public async Task ShouldThrowWhenClientDoesntExists()
@@ -110,7 +139,44 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
         // Assert
         (await act.Should().ThrowAsync<NotFoundException>())
             .Where(e => e.EntityName == nameof(Client))
-            .Where(e => (string)e.Key == request.Passport);
+            .Where(e => (string)e.Key == request.PayerPassport);
+    }
+
+
+    private async Task<(Room, IEnumerable<Client>)> AddRoomWithClients()
+    {
+        var room = new Room
+        {
+            Number = "105",
+            RoomType = new()
+            {
+                MaxPeopleNumber = 3,
+                PricePerDay = 10
+            }
+        };
+        await AddRoom(room);
+
+        var clients = new List<Client>();
+        clients.Add(new()
+        {
+            Passport = "Passport"
+        });
+        clients.Add(new()
+        {
+            Passport = "Passport 2"
+        });
+        clients.Add(new()
+        {
+            Passport = "Passport 3"
+        });
+        
+        foreach (var client in clients)
+        {
+            await AddClient(client.Passport);
+            await CheckInClient(client.Passport, "City", room.Number);
+        }
+
+        return (room, clients);
     }
     
     

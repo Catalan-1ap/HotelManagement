@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -28,12 +30,12 @@ public sealed class CheckOutClientCommandHandler : IRequestHandler<CheckOutClien
 
     public async Task<RoomReport> Handle(CheckOutClientCommand request, CancellationToken token)
     {
-        var client = await TryGetClient(request.Passport, token);
-        
-        var report = CreateReport(client);
-        client.IsCheckout = true;
-        client.Room = null;
-        
+        var payer = await TryGetClient(request.PayerPassport, token);
+        var party = await GetRestClientsExcludePayer(payer.Passport, payer.Room!.Number, token);
+
+        var report = CreateReport(payer);
+        CheckOutClients(payer, party);
+
         _dbContext.RoomReports.Add(report);
         await _dbContext.SaveChangesAsync(token);
 
@@ -48,7 +50,7 @@ public sealed class CheckOutClientCommandHandler : IRequestHandler<CheckOutClien
             .ThenInclude(r => r!.RoomType)
             .Where(Client.CanCheckOut)
             .SingleOrDefaultAsync(c => c.Passport == passport, token);
-        
+
         if (client is null)
             throw new NotFoundException(nameof(Client), passport);
 
@@ -56,18 +58,49 @@ public sealed class CheckOutClientCommandHandler : IRequestHandler<CheckOutClien
     }
 
 
-    private RoomReport CreateReport(Client client)
+    private async Task<IEnumerable<Client>> GetRestClientsExcludePayer(
+        string payerPassport,
+        string roomNumber,
+        CancellationToken token)
     {
-        var days = (_dateTimeService.UtcNow - client.Arrival).Days;
+        var party = await _dbContext.Rooms
+            .Include(r => r.Clients)
+            .Where(r => r.Number == roomNumber)
+            .SelectMany(r => r.Clients)
+            .Where(c => c.Passport != payerPassport)
+            .ToListAsync(token);
+
+        return party.Count == 0
+            ? Enumerable.Empty<Client>()
+            : party;
+    }
+
+
+    private RoomReport CreateReport(Client payer)
+    {
+        var days = (_dateTimeService.UtcNow - payer.Arrival).Days;
 
         var report = new RoomReport
         {
-            Client = client,
-            Room = client.Room,
+            Client = payer,
+            Room = payer.Room,
             DaysNumber = days,
-            TotalPrice = client.Room!.RoomType!.PricePerDay * days
+            TotalPrice = payer.Room!.RoomType!.PricePerDay * days
         };
 
         return report;
+    }
+
+
+    private static void CheckOutClients(Client payer, IEnumerable<Client> party)
+    {
+        payer.IsCheckout = true;
+        payer.Room = null;
+        
+        foreach (var client in party)
+        {
+            client.IsCheckout = true;
+            client.Room = null;
+        }
     }
 }

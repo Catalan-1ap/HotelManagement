@@ -6,4 +6,4 @@ using MediatR;
 namespace Application.CQRS.ClientEntity.CheckOutClient;
 
 
-public sealed record CheckOutClientCommand(string Passport) : IRequest<RoomReport>;
+public sealed record CheckOutClientCommand(string PayerPassport) : IRequest<RoomReport>;

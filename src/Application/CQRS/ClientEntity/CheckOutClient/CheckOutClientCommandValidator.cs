@@ -9,6 +9,6 @@ public sealed class CheckOutClientCommandValidator : AbstractValidator<CheckOutC
 {
     public CheckOutClientCommandValidator()
     {
-        RuleFor(c => c.Passport).PassportRule();
+        RuleFor(c => c.PayerPassport).PassportRule();
     }
 }
