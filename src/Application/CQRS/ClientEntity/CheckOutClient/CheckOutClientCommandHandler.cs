@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Exceptions;
@@ -17,8 +14,8 @@ namespace Application.CQRS.ClientEntity.CheckOutClient;
 
 public sealed class CheckOutClientCommandHandler : IRequestHandler<CheckOutClientCommand, RoomReport>
 {
-    private readonly IApplicationDbContext _dbContext;
     private readonly IDateTimeService _dateTimeService;
+    private readonly IApplicationDbContext _dbContext;
 
 
     public CheckOutClientCommandHandler(IApplicationDbContext dbContext, IDateTimeService dateTimeService)
@@ -70,9 +67,7 @@ public sealed class CheckOutClientCommandHandler : IRequestHandler<CheckOutClien
             .Where(c => c.Passport != payerPassport)
             .ToListAsync(token);
 
-        return party.Count == 0
-            ? Enumerable.Empty<Client>()
-            : party;
+        return party;
     }
 
 
@@ -96,7 +91,7 @@ public sealed class CheckOutClientCommandHandler : IRequestHandler<CheckOutClien
     {
         payer.IsCheckout = true;
         payer.Room = null;
-        
+
         foreach (var client in party)
         {
             client.IsCheckout = true;

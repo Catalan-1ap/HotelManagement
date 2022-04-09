@@ -20,9 +20,9 @@ namespace Application.UnitTests;
 
 public sealed class CheckOutClientComandTests : BaseTestHandler
 {
+    private readonly IDateTimeService _dateTimeService = Substitute.For<IDateTimeService>();
     private readonly IApplicationDbContext _dbContext;
     private readonly CheckOutClientCommandHandler _handler;
-    private readonly IDateTimeService _dateTimeService = Substitute.For<IDateTimeService>();
 
 
     public CheckOutClientComandTests()
@@ -32,9 +32,8 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
         _dateTimeService.UtcNow.Returns(new DateTime(2003, 2, 26));
         _handler = new(_dbContext, _dateTimeService);
     }
-    
 
-    
+
     [Fact]
     public async Task ShouldsetCorrectTotalPriceAndElapsedDays()
     {
@@ -42,20 +41,20 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
         var (room, clients) = await AddRoomWithClients();
         var payer = clients.First();
         var request = new CheckOutClientCommand(payer.Passport);
-        
+
         var elapsedDays = 4;
         _dateTimeService.UtcNow.Returns(_dateTimeService.UtcNow.AddDays(elapsedDays));
-        
+
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
-        
+
         // Assert
         var report = _dbContext.RoomReports.Should().Contain(response).Subject;
         report.DaysNumber.Should().Be(elapsedDays);
         report.TotalPrice.Should().Be(room.RoomType!.PricePerDay * elapsedDays);
     }
-    
-    
+
+
     [Fact]
     public async Task ShouldCreateReportForPayerWithRoom()
     {
@@ -63,10 +62,10 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
         var (room, clients) = await AddRoomWithClients();
         var payer = clients.First();
         var request = new CheckOutClientCommand(payer.Passport);
-        
+
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
-        
+
         // Assert
         var report = _dbContext.RoomReports.Should().Contain(response).Subject;
         report.Client.Should()
@@ -78,7 +77,7 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
             .And
             .Match<Room>(r => r.Number == room.Number);
     }
-    
+
 
     [Fact]
     public async Task ShouldCheckoutPayerParty()
@@ -87,15 +86,15 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
         var (room, clients) = await AddRoomWithClients();
         var payer = clients.First();
         var request = new CheckOutClientCommand(payer.Passport);
-        
+
         // Act
         var _ = await _handler.Handle(request, CancellationToken.None);
-        
+
         // Assert
         _dbContext.Clients.Should().OnlyContain(c => c.IsCheckout);
     }
-    
-    
+
+
     [Fact]
     public async Task ShouldSetRoomRelationshipToNull()
     {
@@ -103,14 +102,14 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
         var (room, clients) = await AddRoomWithClients();
         var payer = clients.First();
         var request = new CheckOutClientCommand(payer.Passport);
-        
+
         // Act
         var _ = await _handler.Handle(request, CancellationToken.None);
-        
+
         // Assert
         _dbContext.Clients.Should().OnlyContain(c => c.Room == null);
     }
-    
+
 
     [Fact]
     public async Task ShouldThrowWhenClientDoesntExists()
@@ -169,7 +168,7 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
         {
             Passport = "Passport 3"
         });
-        
+
         foreach (var client in clients)
         {
             await AddClient(client.Passport);
@@ -178,8 +177,8 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
 
         return (room, clients);
     }
-    
-    
+
+
     private async Task AddClient(string passport)
     {
         var addCommand = new CreateClientCommand(passport,

@@ -6,8 +6,6 @@ using Application.Interfaces;
 using Application.UnitTests.Common;
 using Domain.Entities;
 using FluentAssertions;
-using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 using Xunit;
 
 
@@ -31,7 +29,7 @@ public sealed class UpdateCleanerCommandTests : BaseTestHandler
     public async Task ShouldUpdateWhenExist()
     {
         // Arrange
-        var cleaner = new Cleaner()
+        var cleaner = new Cleaner
         {
             Person = new()
             {
@@ -59,7 +57,7 @@ public sealed class UpdateCleanerCommandTests : BaseTestHandler
     public async Task ShouldThrowNotFoundIfDoesntExist()
     {
         // Arrange
-        var cleaner = new Cleaner()
+        var cleaner = new Cleaner
         {
             Person = new()
             {
@@ -77,7 +75,7 @@ public sealed class UpdateCleanerCommandTests : BaseTestHandler
         await act.Should().ThrowAsync<NotFoundException>();
     }
 
-    
+
     private async Task Add(Cleaner cleaner)
     {
         var context = MakeContext();

@@ -8,7 +8,6 @@ using Application.Interfaces;
 using Application.UnitTests.Common;
 using Domain.Entities;
 using FluentAssertions;
-using NSubstitute.ReceivedExtensions;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using Xunit;
@@ -19,9 +18,9 @@ namespace Application.UnitTests;
 
 public sealed class CheckInClientCommandTests : BaseTestHandler
 {
+    private readonly IDateTimeService _dateTimeService = Substitute.For<IDateTimeService>();
     private readonly IApplicationDbContext _dbContext;
     private readonly CheckInClientCommandHandler _handler;
-    private readonly IDateTimeService _dateTimeService = Substitute.For<IDateTimeService>();
 
 
     public CheckInClientCommandTests()
@@ -39,7 +38,7 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
         // Arrange
         var client = new Client
         {
-            Passport = "Passport",
+            Passport = "Passport"
         };
         await AddClient(client.Passport);
         var room = new Room
@@ -77,7 +76,7 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
         // Arrange
         var client = new Client
         {
-            Passport = "Passport",
+            Passport = "Passport"
         };
         await AddClient(client.Passport);
         var request = new CheckInClientCommand(client.Passport, "City", "105");
@@ -98,7 +97,7 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
         // Arrange
         var room = new Room
         {
-            Number = "105",
+            Number = "105"
         };
         await AddRoom(room);
         var request = new CheckInClientCommand("Passport", "City", room.Number);
@@ -180,9 +179,7 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
         var room = await dbContext.Rooms.SingleAsync(r => r.Number == roomNumber);
 
         foreach (var client in clients)
-        {
             room.Clients.Add(client);
-        }
 
         await dbContext.SaveChangesAsync(CancellationToken.None);
     }

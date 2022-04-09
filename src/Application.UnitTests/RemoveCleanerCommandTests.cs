@@ -6,8 +6,6 @@ using Application.Interfaces;
 using Application.UnitTests.Common;
 using Domain.Entities;
 using FluentAssertions;
-using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 using Xunit;
 
 
@@ -31,7 +29,7 @@ public class RemoveCleanerCommandTests : BaseTestHandler
     public async Task ShouldRemoveWhenExist()
     {
         // Arrange
-        var cleaner = new Cleaner()
+        var cleaner = new Cleaner
         {
             Person = new()
             {
@@ -63,6 +61,7 @@ public class RemoveCleanerCommandTests : BaseTestHandler
         // Assert
         await act.Should().ThrowAsync<NotFoundException>();
     }
+
 
     private async Task Add(Cleaner cleaner)
     {

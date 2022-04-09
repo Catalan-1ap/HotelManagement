@@ -3,11 +3,8 @@ using System.Threading.Tasks;
 using Application.CQRS.CleanerEntity.CreateCleaner;
 using Application.Interfaces;
 using Application.UnitTests.Common;
-using Domain.Entities;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 using Xunit;
 
 

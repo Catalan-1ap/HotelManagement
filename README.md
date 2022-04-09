@@ -14,6 +14,7 @@ Used Stack:
 - [FluentAssertions](https://github.com/fluentassertions/fluentassertions)
 - [MediatR](https://github.com/jbogard/MediatR)
 - [Stylet](https://github.com/canton7/Stylet)
+- [ConfigureAwait.Fody](https://github.com/Fody/ConfigureAwait)
 
 ## Description
 

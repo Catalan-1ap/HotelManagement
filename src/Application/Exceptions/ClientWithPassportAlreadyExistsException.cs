@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 
 namespace Application.Exceptions;
@@ -7,12 +6,10 @@ namespace Application.Exceptions;
 
 public sealed class ClientWithPassportAlreadyExistsException : Exception
 {
-    public string Passport { get; }
-
-
     public ClientWithPassportAlreadyExistsException(string passport)
-        : base($"Client with passport \"{passport}\" already exists")
-    {
+        : base($"Client with passport \"{passport}\" already exists") =>
         Passport = passport;
-    }
+
+
+    public string Passport { get; }
 }

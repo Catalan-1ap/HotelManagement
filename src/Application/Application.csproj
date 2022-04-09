@@ -7,13 +7,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Domain\Domain.csproj" />
+        <ProjectReference Include="..\Domain\Domain.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.4.0" />
-        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
+        <PackageReference Include="ConfigureAwait.Fody" Version="3.3.1"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.4.0"/>
+        <PackageReference Include="Fody" Version="6.6.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3"/>
     </ItemGroup>
 
 </Project>

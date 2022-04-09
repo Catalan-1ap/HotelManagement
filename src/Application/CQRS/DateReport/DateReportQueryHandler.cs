@@ -16,7 +16,7 @@ public sealed class DateReportQueryHandler : IRequestHandler<DateReportQuery, Da
 
     public DateReportQueryHandler(IReadOnlyApplicationDbContext dbContext) => _dbContext = dbContext;
 
-    
+
     public async Task<DateReportResponse> Handle(DateReportQuery request, CancellationToken token)
     {
         var clientsCount = await _dbContext.Clients
@@ -27,7 +27,7 @@ public sealed class DateReportQueryHandler : IRequestHandler<DateReportQuery, Da
 
         var roomsDetails = await _dbContext.RoomReports
             .Include(r => r.Client)
-            .Where(c => c.Client.Arrival >= request.From && c.Client.Arrival <= request.To)
+            .Where(c => c.Client!.Arrival >= request.From && c.Client.Arrival <= request.To)
             .GroupBy(r => r.RoomId)
             .Select(reports => new
             {

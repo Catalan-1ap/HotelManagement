@@ -8,6 +8,10 @@ namespace Infrastructure.Persistence;
 
 internal class ApplicationDbContext : DbContext, IApplicationDbContext
 {
+    public ApplicationDbContext(DbContextOptions options)
+        : base(options) { }
+
+
     public DbSet<Room> Rooms { get; set; } = null!;
     public DbSet<RoomReport> RoomReports { get; set; } = null!;
     public DbSet<Person> Persons { get; set; } = null!;
@@ -16,10 +20,6 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Floor> Floors { get; set; } = null!;
     public DbSet<FloorCleaner> FloorCleaners { get; set; } = null!;
     public DbSet<RoomType> RoomTypes { get; set; } = null!;
-
-
-    public ApplicationDbContext(DbContextOptions options)
-        : base(options) { }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

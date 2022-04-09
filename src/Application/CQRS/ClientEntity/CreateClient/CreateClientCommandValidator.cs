@@ -16,7 +16,7 @@ public sealed class CreateClientCommandValidator : AbstractValidator<CreateClien
         RuleFor(c => c.Person.SurName)!.SurNameRule();
 
         RuleFor(c => c.Person.Patronymic)!.PatronymicRule();
-        
+
         RuleFor(c => c.Passport).PassportRule();
     }
 }
