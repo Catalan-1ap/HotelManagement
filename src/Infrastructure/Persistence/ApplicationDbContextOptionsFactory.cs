@@ -4,7 +4,7 @@
 namespace Infrastructure.Persistence;
 
 
-internal static class DbContextOptionsFactory
+internal static class ApplicationDbContextOptionsFactory
 {
     private static readonly string ConnectionString =
         @"Server=(localdb)\mssqllocaldb;Initial Catalog=HotelManagement;Trusted_Connection=True;";

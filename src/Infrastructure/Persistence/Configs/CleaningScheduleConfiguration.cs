@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Infrastructure.Persistence.Configs;
 
 
-internal class FloorCleanerConfiguration : IEntityTypeConfiguration<FloorCleaner>
+internal class CleaningScheduleConfiguration : IEntityTypeConfiguration<CleaningSchedule>
 {
-    public void Configure(EntityTypeBuilder<FloorCleaner> builder)
+    public void Configure(EntityTypeBuilder<CleaningSchedule> builder)
     {
         builder.HasKey(fc => new { fc.FloorId, fc.Weekday });
 

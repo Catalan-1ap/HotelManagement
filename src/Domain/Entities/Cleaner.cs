@@ -11,5 +11,5 @@ public sealed class Cleaner
     public int PersonId { get; set; }
     public Person? Person { get; set; }
 
-    public ICollection<FloorCleaner> Workdays { get; } = new HashSet<FloorCleaner>();
+    public ICollection<CleaningSchedule> Workdays { get; } = new HashSet<CleaningSchedule>();
 }

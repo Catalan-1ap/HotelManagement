@@ -53,13 +53,16 @@ public class RemoveCleanerCommandTests : BaseTestHandler
     public async Task ShouldThrowNotFoundIfDoesntExist()
     {
         // Arrange
-        var request = new RemoveCleanerCommand(1);
+        var id = 1;
+        var request = new RemoveCleanerCommand(id);
 
         // Act
         var act = async () => await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        await act.Should().ThrowAsync<NotFoundException>();
+        (await act.Should().ThrowAsync<NotFoundException>())
+            .Where(e => e.EntityName == nameof(Cleaner))
+            .Where(e => (int)e.Key == id);
     }
 
 

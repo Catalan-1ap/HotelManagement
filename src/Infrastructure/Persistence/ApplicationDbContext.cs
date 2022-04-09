@@ -18,7 +18,7 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Client> Clients { get; set; } = null!;
     public DbSet<Cleaner> Cleaners { get; set; } = null!;
     public DbSet<Floor> Floors { get; set; } = null!;
-    public DbSet<FloorCleaner> FloorCleaners { get; set; } = null!;
+    public DbSet<CleaningSchedule> CleaningSchedule { get; set; } = null!;
     public DbSet<RoomType> RoomTypes { get; set; } = null!;
 
 

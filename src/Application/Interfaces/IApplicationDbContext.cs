@@ -16,7 +16,7 @@ public interface IApplicationDbContext : IAsyncDisposable, IDisposable
     DbSet<Client> Clients { get; set; }
     DbSet<Cleaner> Cleaners { get; set; }
     DbSet<Floor> Floors { get; set; }
-    DbSet<FloorCleaner> FloorCleaners { get; set; }
+    DbSet<CleaningSchedule> CleaningSchedule { get; set; }
     DbSet<RoomType> RoomTypes { get; set; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);

@@ -11,7 +11,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        services.AddDbContext<ApplicationDbContext>(DbContextOptionsFactory.Make);
+        services.AddDbContext<ApplicationDbContext>(ApplicationDbContextOptionsFactory.Make);
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddSingleton<IReadOnlyApplicationDbContext, ReadOnlyApplicationDbContext>();

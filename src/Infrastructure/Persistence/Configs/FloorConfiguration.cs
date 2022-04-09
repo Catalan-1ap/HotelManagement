@@ -8,8 +8,12 @@ namespace Infrastructure.Persistence.Configs;
 
 internal sealed class FloorConfiguration : IEntityTypeConfiguration<Floor>
 {
-    public void Configure(EntityTypeBuilder<Floor> builder) =>
+    public void Configure(EntityTypeBuilder<Floor> builder)
+    {
+        builder.HasKey(f => f.Number);
+
         builder.HasCheckConstraint(
             $"CK_{nameof(Floor.Number)}",
             $"[{nameof(Floor.Number)}] > 0");
+    }
 }

@@ -13,6 +13,6 @@ public interface IReadOnlyApplicationDbContext
     IQueryable<Client> Clients { get; }
     IQueryable<Cleaner> Cleaners { get; }
     IQueryable<Floor> Floors { get; }
-    IQueryable<FloorCleaner> FloorCleaners { get; }
+    IQueryable<CleaningSchedule> CleaningSchedule { get; }
     IQueryable<RoomType> RoomTypes { get; }
 }

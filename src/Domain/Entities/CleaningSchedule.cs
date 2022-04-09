@@ -4,7 +4,7 @@ using Domain.Enums;
 namespace Domain.Entities;
 
 
-public sealed class FloorCleaner
+public sealed class CleaningSchedule
 {
     public Weekday Weekday { get; set; }
 

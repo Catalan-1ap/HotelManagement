@@ -9,14 +9,7 @@ namespace Application.UnitTests.Mocks;
 
 public class MockedContext : DbContext, IApplicationDbContext
 {
-    public static MockedContext Make(string dbName)
-    {
-        var options = new DbContextOptionsBuilder<MockedContext>()
-            .UseInMemoryDatabase(dbName)
-            .Options;
-
-        return new(options);
-    }
+    public MockedContext(DbContextOptions<MockedContext> options) : base(options) { }
 
 
     public DbSet<Room> Rooms { get; set; } = null!;
@@ -25,11 +18,18 @@ public class MockedContext : DbContext, IApplicationDbContext
     public DbSet<Client> Clients { get; set; } = null!;
     public DbSet<Cleaner> Cleaners { get; set; } = null!;
     public DbSet<Floor> Floors { get; set; } = null!;
-    public DbSet<FloorCleaner> FloorCleaners { get; set; } = null!;
+    public DbSet<CleaningSchedule> CleaningSchedule { get; set; } = null!;
     public DbSet<RoomType> RoomTypes { get; set; } = null!;
 
 
-    public MockedContext(DbContextOptions<MockedContext> options) : base(options) { }
+    public static MockedContext Make(string dbName)
+    {
+        var options = new DbContextOptionsBuilder<MockedContext>()
+            .UseInMemoryDatabase(dbName)
+            .Options;
+
+        return new(options);
+    }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
