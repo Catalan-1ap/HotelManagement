@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Application.CQRS.ClientEntity.CreateClient;
+using Application.Exceptions;
 using Application.Interfaces;
 using Application.UnitTests.Common;
 using FluentAssertions;
@@ -43,5 +44,27 @@ public sealed class CreateClientCommandTests : BaseTestHandler
         // Assert
         (await _dbContext.Clients.ContainsAsync(response, CancellationToken.None)).Should()
             .BeTrue();
+    }
+
+
+    [Fact]
+    public async Task ShouldThrowWhenSamePassportExists()
+    {
+        // Arrange
+        var request = new CreateClientCommand("Passport",
+            new()
+            {
+                FirstName = "F",
+                SurName = "S",
+                Patronymic = "P"
+            });
+        await _handler.Handle(request, CancellationToken.None);
+
+        // Act
+        var act = async () => await _handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<ClientWithPassportAlreadyExistsException>()
+            .Where(e => e.Passport == request.Passport);
     }
 }

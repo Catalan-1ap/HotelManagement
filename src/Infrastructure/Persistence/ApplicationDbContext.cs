@@ -8,8 +8,7 @@ namespace Infrastructure.Persistence;
 
 internal class ApplicationDbContext : DbContext, IApplicationDbContext
 {
-    public ApplicationDbContext(DbContextOptions options)
-        : base(options) { }
+    public ApplicationDbContext(DbContextOptions options) : base(options) { }
 
 
     public DbSet<Room> Rooms { get; set; } = null!;

@@ -9,7 +9,6 @@ Used Stack:
 - Git, Github
 - [xUnit](https://github.com/xunit/xunit)
 - [NSubstitute](https://github.com/nsubstitute/NSubstitute)
-- [Bogus](https://github.com/bchavez/Bogus)
 - [FluentValidation](https://github.com/FluentValidation/FluentValidation)
 - [FluentAssertions](https://github.com/fluentassertions/fluentassertions)
 - [MediatR](https://github.com/jbogard/MediatR)
