@@ -5,9 +5,12 @@ using Microsoft.EntityFrameworkCore.Design;
 namespace Infrastructure.Persistence;
 
 
-internal class ApplicationDbContextDesignTimeFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+internal class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
 {
-    public ApplicationDbContext CreateDbContext(string[] args)
+    public ApplicationDbContext CreateDbContext(string[] args) => CreateDbContext();
+
+
+    public static ApplicationDbContext CreateDbContext()
     {
         var builder = new DbContextOptionsBuilder();
 

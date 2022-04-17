@@ -1,0 +1,18 @@
+﻿<Window x:Class="Wpf.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:Wpf.ViewModels"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Style="{DynamicResource MaterialWindow}"
+        Title="Главное окно приложения"
+        d:DataContext="{d:DesignInstance viewModels:ShellViewModel}">
+    <StackPanel>
+        <TextBlock Text="{Binding Test}" />
+        <TextBlock>
+            <materialDesign:PackIcon Kind="HumanHello" />
+        </TextBlock>
+    </StackPanel>
+</Window>

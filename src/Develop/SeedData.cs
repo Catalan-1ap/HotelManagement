@@ -1,25 +1,23 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.Interfaces;
-using Domain.Entities;
+﻿using Domain.Entities;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Application.Common;
+namespace Develop;
 
 
 public sealed class SeedData
 {
-    private readonly IApplicationDbContext _dbContext;
-    private readonly Random _random = new();
-
-
-    public SeedData(IApplicationDbContext dbContext) => _dbContext = dbContext;
+    private ApplicationDbContext _dbContext = null!;
+    private Random _random = null!;
 
 
     public async Task Seed()
     {
+        _dbContext = ApplicationDbContextFactory.CreateDbContext();
+        _random = new();
+
+        await using var dbContext = _dbContext;
         SeedFloors();
         SeedRoomTypes();
         await SeedRooms(roomNumberPerFloor: (3, 6));

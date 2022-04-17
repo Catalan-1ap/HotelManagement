@@ -1,11 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Domain.Entities;
 
 
 namespace Application.Interfaces;
 
 
-public interface IReadOnlyApplicationDbContext
+public interface IReadOnlyApplicationDbContext : IAsyncDisposable, IDisposable
 {
     IQueryable<Room> Rooms { get; }
     IQueryable<RoomReport> RoomReports { get; }
