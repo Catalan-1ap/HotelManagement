@@ -4,15 +4,35 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:Wpf.ViewModels"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:s="https://github.com/canton7/Stylet"
         mc:Ignorable="d"
         Style="{DynamicResource MaterialWindow}"
         Title="Главное окно приложения"
         d:DataContext="{d:DesignInstance viewModels:ShellViewModel}">
-    <StackPanel>
-        <TextBlock Text="{Binding Test}" />
-        <TextBlock>
-            <materialDesign:PackIcon Kind="HumanHello" />
-        </TextBlock>
-    </StackPanel>
+    <Grid>
+        <TabControl ItemsSource="{Binding Items}"
+                    SelectedItem="{Binding ActiveItem}"
+                    DisplayMemberPath="DisplayName"
+                    Style="{DynamicResource MaterialDesignTabControl}">
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <ContentControl s:View.Model="{Binding}"
+                                    VerticalContentAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch" IsTabStop="False" />
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+
+            <TabControl.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Удалить вкладку" Command="{s:Action RemoveTab}" />
+                </ContextMenu>
+            </TabControl.ContextMenu>
+        </TabControl>
+    </Grid>
+
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Начать с начала" Command="{s:Action RestoreMainTab}" />
+        </ContextMenu>
+    </Window.ContextMenu>
 </Window>

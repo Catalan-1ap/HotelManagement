@@ -1,32 +1,24 @@
 ﻿using Domain.Entities;
 using Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace Develop;
 
 
-public sealed class SeedData
+public static class SeedData
 {
-    private ApplicationDbContext _dbContext = null!;
-    private Random _random = null!;
-
-
-    public async Task Seed()
+    public static void Seed()
     {
-        _dbContext = ApplicationDbContextFactory.CreateDbContext();
-        _random = new();
+        using var dbContext = ApplicationDbContextFactory.CreateDbContext();
+        var random = new Random();
 
-        await using var dbContext = _dbContext;
-        SeedFloors();
-        SeedRoomTypes();
-        await SeedRooms(roomNumberPerFloor: (3, 6));
-
-        await _dbContext.SaveChangesAsync(CancellationToken.None);
+        SeedFloors(dbContext);
+        SeedRoomTypes(dbContext);
+        SeedRooms(dbContext, random, roomNumberPerFloor: (3, 6));
     }
 
 
-    private void SeedFloors()
+    private static void SeedFloors(ApplicationDbContext dbContext)
     {
         var floors = new Floor[]
         {
@@ -44,11 +36,12 @@ public sealed class SeedData
             }
         };
 
-        _dbContext.Floors.AddRange(floors);
+        dbContext.Floors.AddRange(floors);
+        dbContext.SaveChanges();
     }
 
 
-    private void SeedRoomTypes()
+    private static void SeedRoomTypes(ApplicationDbContext dbContext)
     {
         var roomTypes = new RoomType[]
         {
@@ -66,34 +59,37 @@ public sealed class SeedData
             }
         };
 
-        _dbContext.RoomTypes.AddRange(roomTypes);
+        dbContext.RoomTypes.AddRange(roomTypes);
+        dbContext.SaveChanges();
     }
 
 
-    private async Task SeedRooms((int min, int max) roomNumberPerFloor)
+    private static void SeedRooms(ApplicationDbContext dbContext, Random random, (int min, int max) roomNumberPerFloor)
     {
-        var roomTypes = await _dbContext.RoomTypes.ToArrayAsync();
-        var floors = await _dbContext.Floors.ToArrayAsync();
+        var roomTypes = dbContext.RoomTypes.ToArray();
+        var floors = dbContext.Floors.ToArray();
         var (min, max) = roomNumberPerFloor;
 
         RoomType RandomRoomType()
         {
-            var randomIndex = _random.Next(roomTypes.Length);
+            var randomIndex = random.Next(roomTypes.Length);
 
             return roomTypes[randomIndex];
         }
 
         foreach (var floor in floors)
         {
-            var roomNumber = _random.Next(min, max);
+            var roomNumber = random.Next(min, max);
 
             for (int i = 0; i < roomNumber; i++)
-                _dbContext.Rooms.Add(new()
+                dbContext.Rooms.Add(new()
                 {
                     Number = $"{floor.Number}F-{i + 1}",
                     Floor = floor,
                     RoomType = RandomRoomType()
                 });
         }
+
+        dbContext.SaveChanges();
     }
 }

@@ -1,10 +1,24 @@
 ﻿using Stylet;
+using Wpf.Common;
 
 
 namespace Wpf.ViewModels;
 
 
-public sealed class ShellViewModel : Screen
+public sealed class ShellViewModel : Conductor<TabScreen>.Collection.OneActive
 {
-    public string Test { get; set; } = "Hello World";
+    private readonly MainTabViewModel _mainTab;
+
+
+    public ShellViewModel(MainTabViewModel mainTab)
+    {
+        _mainTab = mainTab;
+        RestoreMainTab();
+    }
+
+
+    public void RestoreMainTab() => ActivateItem(_mainTab);
+
+
+    public void RemoveTab() => CloseItem(ActiveItem);
 }

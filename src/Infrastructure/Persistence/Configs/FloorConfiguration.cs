@@ -11,6 +11,9 @@ internal sealed class FloorConfiguration : IEntityTypeConfiguration<Floor>
     public void Configure(EntityTypeBuilder<Floor> builder)
     {
         builder.HasKey(f => f.Number);
+        builder
+            .Property(f => f.Number)
+            .ValueGeneratedNever();
 
         builder.HasCheckConstraint(
             $"CK_{nameof(Floor.Number)}",

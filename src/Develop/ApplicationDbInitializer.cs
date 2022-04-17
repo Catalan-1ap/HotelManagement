@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Develop;
@@ -6,19 +7,19 @@ namespace Develop;
 
 public static class ApplicationDbInitializer
 {
-    public static async Task ReCreate()
+    public static void ReCreate()
     {
-        await using var dbContext = ApplicationDbContextFactory.CreateDbContext();
+        using var dbContext = ApplicationDbContextFactory.CreateDbContext();
 
-        await dbContext.Database.EnsureDeletedAsync();
-        await dbContext.Database.EnsureCreatedAsync();
+        dbContext.Database.EnsureDeleted();
+        dbContext.Database.Migrate();
     }
 
 
-    public static async Task Create()
+    public static void Create()
     {
-        await using var dbContext = ApplicationDbContextFactory.CreateDbContext();
+        using var dbContext = ApplicationDbContextFactory.CreateDbContext();
 
-        await dbContext.Database.EnsureCreatedAsync();
+        dbContext.Database.Migrate();
     }
 }

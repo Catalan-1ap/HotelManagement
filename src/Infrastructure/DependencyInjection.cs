@@ -14,7 +14,7 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(ApplicationDbContextOptionsFactory.Make);
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
-        services.AddSingleton<IReadOnlyApplicationDbContext, ReadOnlyApplicationDbContext>();
+        services.AddScoped<IReadOnlyApplicationDbContext, ReadOnlyApplicationDbContext>();
 
         services.AddTransient<IDateTimeService, DateTimeService>();
 

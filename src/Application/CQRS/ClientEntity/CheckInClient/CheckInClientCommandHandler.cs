@@ -13,8 +13,8 @@ namespace Application.CQRS.ClientEntity.CheckInClient;
 
 public sealed class CheckInClientCommandHandler : IRequestHandler<CheckInClientCommand>
 {
-    private readonly IApplicationDbContext _dbContext;
     private readonly IDateTimeService _dateTimeService;
+    private readonly IApplicationDbContext _dbContext;
 
 
     public CheckInClientCommandHandler(IApplicationDbContext dbContext, IDateTimeService dateTimeService)
@@ -77,6 +77,5 @@ public sealed class CheckInClientCommandHandler : IRequestHandler<CheckInClientC
     }
 
 
-    private bool IsRoomHaveSpaceForClient(int residentsNumber, int maximumResidents) =>
-        residentsNumber + 1 <= maximumResidents;
+    private bool IsRoomHaveSpaceForClient(int residentsNumber, int maximumResidents) => residentsNumber + 1 <= maximumResidents;
 }
