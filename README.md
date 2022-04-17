@@ -14,6 +14,9 @@ Used Stack:
 - [MediatR](https://github.com/jbogard/MediatR)
 - [Stylet](https://github.com/canton7/Stylet)
 - [ConfigureAwait.Fody](https://github.com/Fody/ConfigureAwait)
+- [PropertyChanged.Fody](https://github.com/Fody/PropertyChanged)
+- [MaterialDesignInXAML](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit)
+- [MaterialDesignExtensions](https://github.com/spiegelp/MaterialDesignExtensions)
 
 ## Description
 
