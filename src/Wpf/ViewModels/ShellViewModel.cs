@@ -1,4 +1,6 @@
-﻿using Stylet;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
+using Stylet;
 using Wpf.Common;
 
 
@@ -7,17 +9,17 @@ namespace Wpf.ViewModels;
 
 public sealed class ShellViewModel : Conductor<TabScreen>.Collection.OneActive
 {
-    private readonly MainTabViewModel _mainTab;
+    private readonly IServiceProvider _serviceProvider;
 
 
-    public ShellViewModel(MainTabViewModel mainTab)
+    public ShellViewModel(IServiceProvider serviceProvider)
     {
-        _mainTab = mainTab;
+        _serviceProvider = serviceProvider;
         RestoreMainTab();
     }
 
 
-    public void RestoreMainTab() => ActivateItem(_mainTab);
+    public void RestoreMainTab() => ActivateItem(_serviceProvider.GetRequiredService<MainTabViewModel>());
 
 
     public void RemoveTab() => CloseItem(ActiveItem);

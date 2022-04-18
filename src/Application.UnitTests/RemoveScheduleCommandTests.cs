@@ -29,6 +29,7 @@ public sealed class RemoveScheduleCommandTests : BaseTestHandler
     }
 
 
+    [Fact]
     public async Task ShouldRemoveWhenAllAlright()
     {
         // Arrange

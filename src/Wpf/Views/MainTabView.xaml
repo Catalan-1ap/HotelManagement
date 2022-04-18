@@ -7,5 +7,25 @@
              mc:Ignorable="d"
              Style="{DynamicResource MaterialControl}"
              d:DataContext="{d:DesignInstance viewModels:MainTabViewModel}">
-    <StackPanel />
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <ProgressBar
+            Visibility="{Binding LoadingController.IsLoading}"
+            Style="{DynamicResource MaterialDesignCircularProgressBar}"
+            IsIndeterminate="True">
+            <ProgressBar.RenderTransform>
+                <ScaleTransform ScaleX="2.5" ScaleY="2.5" />
+            </ProgressBar.RenderTransform>
+        </ProgressBar>
+
+        <StackPanel
+            Visibility="{Binding LoadingController.IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="{Binding Header}" />
+            <DataGrid ItemsSource="{Binding Rooms}"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False" />
+        </StackPanel>
+    </Grid>
 </UserControl>

@@ -42,6 +42,6 @@ public sealed class Bootstrapper : MicrosoftDependencyInjectionBootstrapper<Shel
         services.AddApplication();
         services.AddInfrastructure();
 
-        services.Configure<StartupOptions>(_configuration.GetSection(nameof(StartupOptions)));
+        services.Configure<StartupOptions>(_configuration.GetSection(StartupOptions.SectionName));
     }
 }
