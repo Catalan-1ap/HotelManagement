@@ -8,7 +8,6 @@ using Application.Interfaces;
 using Application.UnitTests.Common;
 using Domain.Entities;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using Xunit;
 
@@ -33,24 +32,23 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldCheckInWhenAllAlright()
+    public async Task ShouldCheckIn_WhenAllAlright()
     {
         // Arrange
-        var client = new Client
-        {
-            Passport = "Passport"
-        };
-        await AddClient(client.Passport);
+        var client = new Client { Passport = "1" };
         var room = new Room
         {
-            Number = "105",
+            Number = "1",
             RoomType = new()
             {
                 MaxPeopleNumber = 1
             }
         };
+
+        client = await AddClient(client);
         await AddRoom(room);
-        var request = new CheckInClientCommand(client.Passport, "City", room.Number);
+
+        var request = new CheckInClientCommand(client.Passport!, "City", room.Number!);
 
         // Act
         _ = await _handler.Handle(request, CancellationToken.None);
@@ -71,15 +69,14 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldThrowWhenRoomDoesntExists()
+    public async Task ShouldThrow_WhenRoomDoesntExists()
     {
         // Arrange
-        var client = new Client
-        {
-            Passport = "Passport"
-        };
-        await AddClient(client.Passport);
-        var request = new CheckInClientCommand(client.Passport, "City", "105");
+        var client = new Client { Passport = "1" };
+
+        client = await AddClient(client);
+
+        var request = new CheckInClientCommand(client.Passport!, "City", "105");
 
         // Act
         var act = async () => await _handler.Handle(request, CancellationToken.None);
@@ -92,15 +89,14 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldThrowWhenClientDoesntExists()
+    public async Task ShouldThrow_WhenClientDoesntExists()
     {
         // Arrange
-        var room = new Room
-        {
-            Number = "105"
-        };
+        var room = new Room { Number = "1" };
+
         await AddRoom(room);
-        var request = new CheckInClientCommand("Passport", "City", room.Number);
+
+        var request = new CheckInClientCommand("Passport", "City", room.Number!);
 
         // Act
         var act = async () => await _handler.Handle(request, CancellationToken.None);
@@ -113,28 +109,32 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldThrowWhenRoomIsCrowded()
+    public async Task ShouldThrow_WhenRoomIsCrowded()
     {
         // Arrange
-        var client = new Client
+        var checkedClient = new Client
         {
-            Passport = "Passport"
+            Passport = "1"
         };
-        await AddClient(client.Passport);
+        var nonCheckedClient = new Client
+        {
+            Passport = "2"
+        };
         var room = new Room
         {
-            Number = "105",
+            Number = "1",
             RoomType = new()
             {
                 MaxPeopleNumber = 1
             }
         };
-        await AddRoom(room);
-        await BindClientToRoom(room.Number);
 
-        client.Passport = "NewPassport";
-        await AddClient(client.Passport);
-        var request = new CheckInClientCommand(client.Passport, "City", room.Number);
+        checkedClient = await AddClient(checkedClient);
+        nonCheckedClient = await AddClient(nonCheckedClient);
+        await AddRoom(room);
+        await BindClientsToRoom(room, checkedClient);
+
+        var request = new CheckInClientCommand(nonCheckedClient.Passport!, "City", room.Number!);
 
         // Act
         var act = async () => await _handler.Handle(request, CancellationToken.None);
@@ -146,18 +146,12 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
     }
 
 
-    private async Task AddClient(string passport)
+    private async Task<Client> AddClient(Client client)
     {
-        var addCommand = new CreateClientCommand(passport,
-            new()
-            {
-                FirstName = "F",
-                SurName = "S",
-                Patronymic = "P"
-            });
+        var addCommand = new CreateClientCommand(client.Passport!, new());
         var handler = new CreateClientCommandHandler(MakeContext());
 
-        await handler.Handle(addCommand, CancellationToken.None);
+        return await handler.Handle(addCommand, CancellationToken.None);
     }
 
 
@@ -171,15 +165,16 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
     }
 
 
-    private async Task BindClientToRoom(string roomNumber)
+    private async Task BindClientsToRoom(Room room, params Client[] clients)
     {
         var dbContext = MakeContext();
-
-        var clients = await dbContext.Clients.ToListAsync();
-        var room = await dbContext.Rooms.SingleAsync(r => r.Number == roomNumber);
+        dbContext.Rooms.Attach(room);
 
         foreach (var client in clients)
+        {
+            dbContext.Clients.Attach(client);
             room.Clients.Add(client);
+        }
 
         await dbContext.SaveChangesAsync(CancellationToken.None);
     }

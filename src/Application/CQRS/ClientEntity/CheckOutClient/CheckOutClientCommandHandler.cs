@@ -28,7 +28,7 @@ public sealed class CheckOutClientCommandHandler : IRequestHandler<CheckOutClien
     public async Task<RoomReport> Handle(CheckOutClientCommand request, CancellationToken token)
     {
         var payer = await TryGetClient(request.PayerPassport, token);
-        var party = await GetRestClientsExcludePayer(payer.Passport, payer.Room!.Number, token);
+        var party = await GetRestClientsExcludePayer(payer.Passport!, payer.Room!.Number!, token);
 
         var report = CreateReport(payer);
         CheckOutClients(payer, party);

@@ -27,16 +27,10 @@ public sealed class CreateClientCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldCreate()
+    public async Task ShouldCreate_WhenAllAlright()
     {
         // Arrange
-        var request = new CreateClientCommand("Passport",
-            new()
-            {
-                FirstName = "F",
-                SurName = "S",
-                Patronymic = "P"
-            });
+        var request = new CreateClientCommand("1", new());
 
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
@@ -48,16 +42,10 @@ public sealed class CreateClientCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldThrowWhenSamePassportExists()
+    public async Task ShouldThrow_WhenSamePassportExists()
     {
         // Arrange
-        var request = new CreateClientCommand("Passport",
-            new()
-            {
-                FirstName = "F",
-                SurName = "S",
-                Patronymic = "P"
-            });
+        var request = new CreateClientCommand("1", new());
         await _handler.Handle(request, CancellationToken.None);
 
         // Act

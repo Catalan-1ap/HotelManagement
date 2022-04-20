@@ -26,7 +26,7 @@ public class CreateCleanerCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldCreateCleaner()
+    public async Task ShouldCreate_WhenAllAlright()
     {
         // Arrange
         var request = new CreateCleanerCommand("F", "S", "P");

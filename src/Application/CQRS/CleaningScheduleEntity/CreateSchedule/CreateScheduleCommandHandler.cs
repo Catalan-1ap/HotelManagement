@@ -44,15 +44,23 @@ public sealed class CreateScheduleCommandHandler : IRequestHandler<CreateSchedul
     {
         var (floorNumber, cleanerId, workday) = command;
 
-        var isScheduleAlreadyExists = await _dbContext.CleaningSchedule
-            .AnyAsync(s =>
-                    s.FloorId == floorNumber &&
-                    s.CleanerId == cleanerId &&
-                    s.Weekday == workday,
-                token);
+        var isScheduleExists = new
+        {
+            IsFloorExists = await _dbContext.CleaningSchedule
+                .AnyAsync(s => s.FloorId == floorNumber
+                               &&
+                               s.Weekday == workday, token),
+            IsCleanerExists = await _dbContext.CleaningSchedule
+                .AnyAsync(s => s.CleanerId == cleanerId
+                               &&
+                               s.Weekday == workday, token)
+        };
 
-        if (isScheduleAlreadyExists)
-            throw new CleaningScheduleAlreadyExistsException(floorNumber, cleanerId, workday);
+        if (isScheduleExists.IsFloorExists)
+            throw new CleaningScheduleForFloorAlreadyExistsException(floorNumber, workday);
+
+        if (isScheduleExists.IsCleanerExists)
+            throw new CleaningScheduleForCleanerAlreadyExistsException(cleanerId, workday);
     }
 
 

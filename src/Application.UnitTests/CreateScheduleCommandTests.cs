@@ -29,12 +29,16 @@ public sealed class CreateScheduleCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldCreateScheduleWhenAllAlright()
+    public async Task ShouldCreate_WhenAllAlright()
     {
         // Arrange
-        var floor = await CreateFloor();
-        var cleaner = await CreateCleaner();
-        var workday = Weekday.Friday;
+        var floor = new Floor { Number = 1 };
+        var cleaner = new Cleaner { Person = new() };
+        const Weekday workday = Weekday.Saturday;
+
+        await RegisterFloor(floor);
+        cleaner = await RegisterCleaner(cleaner);
+
         var command = new CreateScheduleCommand(floor.Number, cleaner.Id, workday);
 
         // Act
@@ -49,12 +53,16 @@ public sealed class CreateScheduleCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldThrowWhenScheduleAlreadyExists()
+    public async Task ShouldThrow_WhenScheduleForFloorAlreadyExists()
     {
         // Arrange
-        var floor = await CreateFloor();
-        var cleaner = await CreateCleaner();
-        var workday = Weekday.Friday;
+        var floor = new Floor { Number = 1 };
+        var cleaner = new Cleaner { Person = new() };
+        const Weekday workday = Weekday.Saturday;
+
+        await RegisterFloor(floor);
+        cleaner = await RegisterCleaner(cleaner);
+
         var command = new CreateScheduleCommand(floor.Number, cleaner.Id, workday);
         await _handler.Handle(command, CancellationToken.None);
 
@@ -62,20 +70,49 @@ public sealed class CreateScheduleCommandTests : BaseTestHandler
         var act = async () => await _handler.Handle(command, CancellationToken.None);
 
         // Assert
-        (await act.Should().ThrowAsync<CleaningScheduleAlreadyExistsException>())
+        (await act.Should().ThrowAsync<CleaningScheduleForFloorAlreadyExistsException>())
             .Where(e => e.Weekday == workday)
-            .Where(e => e.CleanerId == cleaner.Id)
             .Where(e => e.FloorNumber == floor.Number);
     }
 
 
     [Fact]
-    public async Task ShouldThrowWhenFloorDoesntExists()
+    public async Task ShouldThrow_WhenScheduleForCleanerAlreadyExists()
     {
         // Arrange
-        var floorNumber = 1;
-        var cleaner = await CreateCleaner();
-        var workday = Weekday.Friday;
+        var mainFloor = new Floor { Number = 1 };
+        var secondaryFloor = new Floor { Number = 2 };
+        var cleaner = new Cleaner { Person = new() };
+        const Weekday workday = Weekday.Saturday;
+
+        await RegisterFloor(mainFloor);
+        await RegisterFloor(secondaryFloor);
+        cleaner = await RegisterCleaner(cleaner);
+
+        var command = new CreateScheduleCommand(mainFloor.Number, cleaner.Id, workday);
+        await _handler.Handle(command, CancellationToken.None);
+        command = new(secondaryFloor.Number, cleaner.Id, workday);
+
+        // Act
+        var act = async () => await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        (await act.Should().ThrowAsync<CleaningScheduleForCleanerAlreadyExistsException>())
+            .Where(e => e.Weekday == workday)
+            .Where(e => e.CleanerId == cleaner.Id);
+    }
+
+
+    [Fact]
+    public async Task ShouldThrow_WhenFloorDoesntExists()
+    {
+        // Arrange
+        const int floorNumber = 1;
+        var cleaner = new Cleaner { Person = new() };
+        const Weekday workday = Weekday.Saturday;
+
+        cleaner = await RegisterCleaner(cleaner);
+
         var command = new CreateScheduleCommand(floorNumber, cleaner.Id, workday);
 
         // Act
@@ -89,12 +126,15 @@ public sealed class CreateScheduleCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldThrowWhenCleanerDoesntExists()
+    public async Task ShouldThrow_WhenCleanerDoesntExists()
     {
         // Arrange
-        var floor = await CreateFloor();
-        var cleanerId = 1;
-        var workday = Weekday.Friday;
+        const int cleanerId = 1;
+        var floor = new Floor { Number = 1 };
+        const Weekday workday = Weekday.Saturday;
+
+        await RegisterFloor(floor);
+
         var command = new CreateScheduleCommand(floor.Number, cleanerId, workday);
 
         // Act
@@ -107,28 +147,24 @@ public sealed class CreateScheduleCommandTests : BaseTestHandler
     }
 
 
-    private async Task<Floor> CreateFloor()
+    private async Task RegisterFloor(Floor floor)
     {
-        var floor = new Floor
-        {
-            Number = 1
-        };
-
         var context = MakeContext();
+
         context.Floors.Add(floor);
         await context.SaveChangesAsync(CancellationToken.None);
-
-        return floor;
     }
 
 
-    private async Task<Cleaner> CreateCleaner()
+    private async Task<Cleaner> RegisterCleaner(Cleaner cleaner)
     {
-        var createCommand = new CreateCleanerCommand("FirstName", "SurName", "Patronymic");
+        var createCommand = new CreateCleanerCommand(
+            cleaner.Person!.FirstName,
+            cleaner.Person.SurName,
+            cleaner.Person.Patronymic);
+
         var handler = new CreateCleanerCommandHandler(MakeContext());
 
-        var cleaner = await handler.Handle(createCommand, CancellationToken.None);
-
-        return cleaner;
+        return await handler.Handle(createCommand, CancellationToken.None);
     }
 }

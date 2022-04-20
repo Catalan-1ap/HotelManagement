@@ -26,19 +26,13 @@ public class RemoveCleanerCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldRemoveWhenExist()
+    public async Task ShouldRemove_WhenExist()
     {
         // Arrange
-        var cleaner = new Cleaner
-        {
-            Person = new()
-            {
-                FirstName = "F",
-                SurName = "S",
-                Patronymic = "P"
-            }
-        };
+        var cleaner = new Cleaner { Person = new() };
+
         await Add(cleaner);
+
         var request = new RemoveCleanerCommand(cleaner.Id);
 
         // Act
@@ -50,10 +44,10 @@ public class RemoveCleanerCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldThrowNotFoundIfDoesntExist()
+    public async Task ShouldThrowNotFound_WhenDoesntExist()
     {
         // Arrange
-        var id = 1;
+        const int id = 1;
         var request = new RemoveCleanerCommand(id);
 
         // Act
@@ -71,6 +65,7 @@ public class RemoveCleanerCommandTests : BaseTestHandler
         var context = MakeContext();
 
         context.Cleaners.Add(cleaner);
+
         await context.SaveChangesAsync(CancellationToken.None);
     }
 }

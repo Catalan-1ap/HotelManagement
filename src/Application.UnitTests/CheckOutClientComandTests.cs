@@ -35,23 +35,23 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldsetCorrectTotalPriceAndElapsedDays()
+    public async Task ShouldSetCorrectTotalPriceAndElapsedDays()
     {
         // Arrange
         var (room, clients) = await AddRoomWithClients();
         var payer = clients.First();
-        var request = new CheckOutClientCommand(payer.Passport);
+        var request = new CheckOutClientCommand(payer.Passport!);
 
-        var elapsedDays = 4;
+        const int elapsedDays = 4;
         _dateTimeService.UtcNow.Returns(_dateTimeService.UtcNow.AddDays(elapsedDays));
 
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        var report = _dbContext.RoomReports.Should().Contain(response).Subject;
-        report.DaysNumber.Should().Be(elapsedDays);
-        report.TotalPrice.Should().Be(room.RoomType!.PricePerDay * elapsedDays);
+        _dbContext.RoomReports.Should().Contain(response);
+        response.DaysNumber.Should().Be(elapsedDays);
+        response.TotalPrice.Should().Be(room.RoomType!.PricePerDay * elapsedDays);
     }
 
 
@@ -61,18 +61,18 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
         // Arrange
         var (room, clients) = await AddRoomWithClients();
         var payer = clients.First();
-        var request = new CheckOutClientCommand(payer.Passport);
+        var request = new CheckOutClientCommand(payer.Passport!);
 
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);
 
         // Assert
-        var report = _dbContext.RoomReports.Should().Contain(response).Subject;
-        report.Client.Should()
+        _dbContext.RoomReports.Should().Contain(response);
+        response.Client.Should()
             .NotBeNull()
             .And
             .Match<Client>(c => c.Passport == payer.Passport);
-        report.Room.Should()
+        response.Room.Should()
             .NotBeNull()
             .And
             .Match<Room>(r => r.Number == room.Number);
@@ -83,12 +83,12 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
     public async Task ShouldCheckoutPayerParty()
     {
         // Arrange
-        var (room, clients) = await AddRoomWithClients();
+        var (_, clients) = await AddRoomWithClients();
         var payer = clients.First();
-        var request = new CheckOutClientCommand(payer.Passport);
+        var request = new CheckOutClientCommand(payer.Passport!);
 
         // Act
-        var _ = await _handler.Handle(request, CancellationToken.None);
+        _ = await _handler.Handle(request, CancellationToken.None);
 
         // Assert
         _dbContext.Clients.Should().OnlyContain(c => c.IsCheckout);
@@ -99,9 +99,9 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
     public async Task ShouldSetRoomRelationshipToNull()
     {
         // Arrange
-        var (room, clients) = await AddRoomWithClients();
+        var (_, clients) = await AddRoomWithClients();
         var payer = clients.First();
-        var request = new CheckOutClientCommand(payer.Passport);
+        var request = new CheckOutClientCommand(payer.Passport!);
 
         // Act
         var _ = await _handler.Handle(request, CancellationToken.None);
@@ -112,14 +112,10 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldThrowWhenClientDoesntExists()
+    public async Task ShouldThrow_WhenClientDoesntExists()
     {
         // Arrange
-        var client = new Client
-        {
-            Passport = "Passport"
-        };
-        await AddClient(client.Passport);
+        var client = new Client { Passport = "1" };
         var room = new Room
         {
             Number = "105",
@@ -129,8 +125,11 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
                 PricePerDay = 10
             }
         };
+
+        client = await AddClient(client);
         await AddRoom(room);
-        var request = new CheckOutClientCommand(client.Passport);
+
+        var request = new CheckOutClientCommand(client.Passport!);
 
         // Act
         var act = async () => await _handler.Handle(request, CancellationToken.None);
@@ -146,51 +145,48 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
     {
         var room = new Room
         {
-            Number = "105",
+            Number = "1",
             RoomType = new()
             {
                 MaxPeopleNumber = 3,
                 PricePerDay = 10
             }
         };
+
         await AddRoom(room);
 
-        var clients = new List<Client>();
-        clients.Add(new()
+        var clients = new List<Client>
         {
-            Passport = "Passport"
-        });
-        clients.Add(new()
-        {
-            Passport = "Passport 2"
-        });
-        clients.Add(new()
-        {
-            Passport = "Passport 3"
-        });
+            new()
+            {
+                Passport = "1"
+            },
+            new()
+            {
+                Passport = "2"
+            },
+            new()
+            {
+                Passport = "3"
+            }
+        };
 
-        foreach (var client in clients)
+        for (var index = 0; index < clients.Count; index++)
         {
-            await AddClient(client.Passport);
-            await CheckInClient(client.Passport, "City", room.Number);
+            clients[index] = await AddClient(clients[index]);
+            await CheckInClient(clients[index], room);
         }
 
         return (room, clients);
     }
 
 
-    private async Task AddClient(string passport)
+    private async Task<Client> AddClient(Client client)
     {
-        var addCommand = new CreateClientCommand(passport,
-            new()
-            {
-                FirstName = "F",
-                SurName = "S",
-                Patronymic = "P"
-            });
+        var addCommand = new CreateClientCommand(client.Passport!, new());
         var handler = new CreateClientCommandHandler(MakeContext());
 
-        await handler.Handle(addCommand, CancellationToken.None);
+        return await handler.Handle(addCommand, CancellationToken.None);
     }
 
 
@@ -204,9 +200,9 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
     }
 
 
-    private async Task CheckInClient(string passport, string city, string roomNumber)
+    private async Task CheckInClient(Client client, Room room)
     {
-        var checkInCommand = new CheckInClientCommand(passport, city, roomNumber);
+        var checkInCommand = new CheckInClientCommand(client.Passport!, "City", room.Number!);
 
         var handler = new CheckInClientCommandHandler(MakeContext(), _dateTimeService);
 

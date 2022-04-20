@@ -8,7 +8,7 @@ namespace Domain.Entities;
 
 public sealed class Client
 {
-    public string Passport { get; set; } = string.Empty;
+    public string? Passport { get; set; }
     public string City { get; set; } = string.Empty;
     public DateTime Arrival { get; set; }
     public bool IsCheckout { get; set; } = true;

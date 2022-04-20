@@ -30,13 +30,16 @@ public sealed class RemoveScheduleCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldRemoveWhenAllAlright()
+    public async Task ShouldRemove_WhenAllAlright()
     {
         // Arrange
-        var floor = await CreateFloor();
-        var cleaner = await CreateCleaner();
-        var workday = Weekday.Friday;
-        await AddSchedule(floor.Number, cleaner.Id, workday);
+        var floor = new Floor { Number = 1 };
+        var cleaner = new Cleaner { Person = new() };
+        const Weekday workday = Weekday.Friday;
+
+        await AddFloor(floor);
+        cleaner = await AddCleaner(cleaner);
+        await AddSchedule(floor, cleaner, workday);
 
         var command = new RemoveScheduleCommand(floor.Number, cleaner.Id, workday);
 
@@ -52,12 +55,15 @@ public sealed class RemoveScheduleCommandTests : BaseTestHandler
 
 
     [Fact]
-    public async Task ShouldThrowWhenScheduleDoesntExists()
+    public async Task ShouldThrow_WhenScheduleDoesntExists()
     {
         // Arrange
-        var floor = await CreateFloor();
-        var cleaner = await CreateCleaner();
-        var workday = Weekday.Friday;
+        var floor = new Floor { Number = 1 };
+        var cleaner = new Cleaner { Person = new() };
+        const Weekday workday = Weekday.Friday;
+
+        await AddFloor(floor);
+        cleaner = await AddCleaner(cleaner);
 
         var command = new RemoveScheduleCommand(floor.Number, cleaner.Id, workday);
 
@@ -70,35 +76,32 @@ public sealed class RemoveScheduleCommandTests : BaseTestHandler
     }
 
 
-    private async Task<Floor> CreateFloor()
+    private async Task AddFloor(Floor floor)
     {
-        var floor = new Floor
-        {
-            Number = 1
-        };
-
         var context = MakeContext();
-        context.Floors.Add(floor);
-        await context.SaveChangesAsync(CancellationToken.None);
 
-        return floor;
+        context.Floors.Add(floor);
+
+        await context.SaveChangesAsync(CancellationToken.None);
     }
 
 
-    private async Task<Cleaner> CreateCleaner()
+    private async Task<Cleaner> AddCleaner(Cleaner cleaner)
     {
-        var createCommand = new CreateCleanerCommand("FirstName", "SurName", "Patronymic");
+        var createCommand = new CreateCleanerCommand(
+            cleaner.Person!.FirstName,
+            cleaner.Person.SurName,
+            cleaner.Person.Patronymic);
+
         var handler = new CreateCleanerCommandHandler(MakeContext());
 
-        var cleaner = await handler.Handle(createCommand, CancellationToken.None);
-
-        return cleaner;
+        return await handler.Handle(createCommand, CancellationToken.None);
     }
 
 
-    private async Task AddSchedule(int floorNumber, int cleanerId, Weekday workday)
+    private async Task AddSchedule(Floor floor, Cleaner cleaner, Weekday workday)
     {
-        var command = new CreateScheduleCommand(floorNumber, cleanerId, workday);
+        var command = new CreateScheduleCommand(floor.Number, cleaner.Id, workday);
         var handler = new CreateScheduleCommandHandler(MakeContext());
 
         await handler.Handle(command, CancellationToken.None);

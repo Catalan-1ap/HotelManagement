@@ -6,7 +6,7 @@ namespace Domain.Entities;
 
 public sealed class Room
 {
-    public string Number { get; set; } = string.Empty;
+    public string? Number { get; set; }
 
     public int? RoomTypeId { get; set; }
     public RoomType? RoomType { get; set; }
