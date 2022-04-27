@@ -9,8 +9,11 @@ namespace Domain.Entities;
 public sealed class Client
 {
     public string? Passport { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string SurName { get; set; } = string.Empty;
+    public string Patronymic { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
-    public DateTime Arrival { get; set; }
+    public DateTime? Arrival { get; set; } = null!;
     public bool IsCheckout { get; set; } = true;
 
     public static Expression<Func<Client, bool>> CanCheckOut { get; } = c => c.IsCheckout == false;
@@ -18,9 +21,6 @@ public sealed class Client
 
     public string? RoomId { get; set; }
     public Room? Room { get; set; }
-
-    public int PersonId { get; set; }
-    public Person? Person { get; set; }
 
     public ICollection<RoomReport> Visits { get; } = new HashSet<RoomReport>();
 }

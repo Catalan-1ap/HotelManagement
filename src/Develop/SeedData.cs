@@ -58,6 +58,12 @@ public static class SeedData
                 Description = "Двуместный номер",
                 MaxPeopleNumber = 2,
                 PricePerDay = 2400
+            },
+            new()
+            {
+                Description = "Трехместный номер",
+                MaxPeopleNumber = 3,
+                PricePerDay = 3100
             }
         };
 

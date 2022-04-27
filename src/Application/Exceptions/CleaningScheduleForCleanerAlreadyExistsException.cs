@@ -1,11 +1,10 @@
-﻿using System;
-using Domain.Enums;
+﻿using Domain.Enums;
 
 
 namespace Application.Exceptions;
 
 
-public sealed class CleaningScheduleForCleanerAlreadyExistsException : Exception
+public sealed class CleaningScheduleForCleanerAlreadyExistsException : BusinessException
 {
     public CleaningScheduleForCleanerAlreadyExistsException(int cleanerId, Weekday weekday)
         : base(

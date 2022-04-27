@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="Wpf.Views.ManageCleanersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:Wpf.ViewModels"
+             xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:components="clr-namespace:Wpf.Components"
+             xmlns:converters="clr-namespace:Wpf.Converters"
+             mc:Ignorable="d"
+             Style="{DynamicResource MaterialControl}"
+             d:DesignWidth="500" d:DesignHeight="600"
+             d:DataContext="{d:DesignInstance viewModels:ManageCleanersViewModel}">
+    <UserControl.Resources>
+        <converters:LocalizeConverter x:Key="LocalizeConverter" />
+        <converters:VisibleIfBiggerThanZeroConverter x:Key="VisibleIfBiggerThanZeroConverter" />
+        <converters:VisibleIfZeroConverter x:Key="VisibleIfZeroConverter" />
+    </UserControl.Resources>
+
+    <components:LoadingComponent LoadingController="{Binding LoadingController}">
+        <DockPanel LastChildFill="True">
+            <ToolBarTray DockPanel.Dock="Top"
+                         VerticalAlignment="Bottom">
+                <ToolBarTray.Resources>
+                    <Style TargetType="{x:Type ToolBar}" BasedOn="{StaticResource MaterialDesignToolBar}">
+                        <Setter Property="Padding" Value="0 10" />
+                    </Style>
+                </ToolBarTray.Resources>
+
+                <ToolBar Header="Управление: ">
+                    <Button Command="{s:Action Add}" Foreground="{DynamicResource PrimaryHueMidBrush}">Добавление</Button>
+                    <Button Command="{s:Action Remove}" Foreground="{DynamicResource SecondaryHueMidBrush}">Удаление</Button>
+                </ToolBar>
+            </ToolBarTray>
+
+            <DataGrid AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      IsReadOnly="True"
+                      ColumnWidth="*"
+                      SelectionMode="Single"
+                      ItemsSource="{Binding Cleaners}"
+                      SelectedItem="{Binding SelectedCleaner}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}" />
+                    <DataGridTextColumn Header="Фамилия" Binding="{Binding SurName}" />
+                    <DataGridTextColumn Header="Отчество" Binding="{Binding Patronymic}" />
+                </DataGrid.Columns>
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <StackPanel HorizontalAlignment="Center" Margin="0 20">
+                            <TextBlock
+                                Visibility="{Binding Workdays.Count, 
+                                    Converter={StaticResource VisibleIfZeroConverter}}">
+                                У этого рабочего нет расписания уборки
+                            </TextBlock>
+
+                            <StackPanel
+                                Visibility="{Binding Workdays.Count, 
+                                    Converter={StaticResource VisibleIfBiggerThanZeroConverter}}">
+                                <TextBlock>Расписание рабочего</TextBlock>
+                                <DataGrid AutoGenerateColumns="False"
+                                          Margin="0 10"
+                                          CanUserAddRows="False"
+                                          CanUserDeleteRows="False"
+                                          IsReadOnly="True"
+                                          ItemsSource="{Binding Workdays}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn
+                                            Header="День недели"
+                                            Binding="{Binding Weekday, 
+                                    Converter={StaticResource LocalizeConverter}}" />
+                                        <DataGridTextColumn
+                                            Header="Номер этажа"
+                                            Binding="{Binding FloorId}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+        </DockPanel>
+    </components:LoadingComponent>
+</UserControl>

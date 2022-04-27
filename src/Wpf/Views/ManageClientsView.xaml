@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="Wpf.Views.ManageClientsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:components="clr-namespace:Wpf.Components"
+             xmlns:viewModels="clr-namespace:Wpf.ViewModels"
+             xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:converters="clr-namespace:Wpf.Converters"
+             mc:Ignorable="d"
+             Style="{DynamicResource MaterialControl}"
+             d:DesignWidth="500" d:DesignHeight="600"
+             d:DataContext="{d:DesignInstance viewModels:ManageClientsViewModel}">
+    <UserControl.Resources>
+        <converters:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <components:LoadingComponent LoadingController="{Binding LoadingController}">
+        <DockPanel LastChildFill="True">
+            <ToolBarTray DockPanel.Dock="Top"
+                         VerticalAlignment="Bottom">
+                <ToolBarTray.Resources>
+                    <Style TargetType="{x:Type ToolBar}" BasedOn="{StaticResource MaterialDesignToolBar}">
+                        <Setter Property="Padding" Value="0 10" />
+                    </Style>
+                </ToolBarTray.Resources>
+
+                <ToolBar Header="Управление: ">
+                    <Button Command="{s:Action Create}" Foreground="{DynamicResource PrimaryHueMidBrush}">Регистрация</Button>
+                    <Button Command="{s:Action CheckIn}" Foreground="{DynamicResource PrimaryHueMidBrush}">Поселить</Button>
+                    <Button Command="{s:Action CheckOut}" Foreground="{DynamicResource SecondaryHueMidBrush}">Выселить</Button>
+                </ToolBar>
+            </ToolBarTray>
+
+            <DataGrid AutoGenerateColumns="False"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      ColumnWidth="*"
+                      ItemsSource="{Binding Clients}"
+                      SelectedItem="{Binding SelectedClient}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Паспорт" Binding="{Binding Passport}" />
+                    <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}" />
+                    <DataGridTextColumn Header="Фамилия" Binding="{Binding SurName}" />
+                    <DataGridTextColumn Header="Отчество" Binding="{Binding Patronymic}" />
+                    <DataGridCheckBoxColumn Header="Выбыл" Binding="{Binding IsCheckout}"
+                                            ElementStyle="{DynamicResource MaterialDesignCheckBox}" />
+                </DataGrid.Columns>
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <StackPanel HorizontalAlignment="Center" Margin="0 20"
+                                    Visibility="{Binding IsCheckout, 
+                                    Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                            <TextBlock>
+                                <Run Text="Город: " />
+                                <Run Text="{Binding City}" />
+                            </TextBlock>
+
+                            <TextBlock Margin="25 0">
+                                <Run Text="Дата прибытия: " />
+                                <Run Text="{Binding Arrival, StringFormat=d}" />
+                            </TextBlock>
+
+                            <TextBlock>
+                                <Run Text="Номер: " />
+                                <Run Text="{Binding RoomId}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+        </DockPanel>
+    </components:LoadingComponent>
+</UserControl>

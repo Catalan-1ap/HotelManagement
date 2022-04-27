@@ -18,17 +18,13 @@
                 <ResourceDictionary Source="Styles/SharedStyles.xaml" />
 
                 <!-- Material Design config -->
-                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Indigo" SecondaryColor="Amber"
+                <materialDesign:BundledTheme BaseTheme="Inherit" PrimaryColor="Indigo" SecondaryColor="Amber"
                                              ColorAdjustment="{materialDesign:ColorAdjustment}" />
-
+                
                 <ResourceDictionary
-                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/Generic.xaml" />
+                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/materialdesigntheme.defaults.xaml" />
                 <ResourceDictionary
-                    Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary
-                    Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/Generic.xaml" />
-                <ResourceDictionary
-                    Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/MaterialDesignLightTheme.xaml" />
+                    Source="pack://application:,,,/MaterialDesignExtensions;component/Themes/generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

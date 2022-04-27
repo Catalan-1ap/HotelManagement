@@ -9,8 +9,15 @@ namespace Wpf.Common;
 [AddINotifyPropertyChangedInterface]
 public class LoadingController
 {
-    public LoadingController(ICollection<Task> loadingTasks) => Task.WhenAll(loadingTasks).ContinueWith(_ => IsLoading = false);
+    private LoadingController(IReadOnlyCollection<Task> loadingTasks) =>
+        Task
+            .WhenAll(loadingTasks)
+            .ContinueWith(_ => IsLoading = false);
+
 
     public bool IsLoading { get; set; } = true;
     public bool IsLoaded => !IsLoading;
+
+
+    public static LoadingController StartNew(IReadOnlyCollection<Task> loadingTasks) => new(loadingTasks);
 }

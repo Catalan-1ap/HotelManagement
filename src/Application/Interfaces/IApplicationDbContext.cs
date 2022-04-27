@@ -12,7 +12,6 @@ public interface IApplicationDbContext : IAsyncDisposable, IDisposable
 {
     DbSet<Room> Rooms { get; set; }
     DbSet<RoomReport> RoomReports { get; set; }
-    DbSet<Person> Persons { get; set; }
     DbSet<Client> Clients { get; set; }
     DbSet<Cleaner> Cleaners { get; set; }
     DbSet<Floor> Floors { get; set; }

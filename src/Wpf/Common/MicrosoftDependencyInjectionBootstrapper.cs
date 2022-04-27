@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Stylet;
 
@@ -43,6 +44,7 @@ public class MicrosoftDependencyInjectionBootstrapper<TRootViewModel> : Bootstra
         services.AddSingleton<IViewManager>(viewManager);
         RegisterViewModels(services, viewManager.ViewModelNameSuffix);
         RegisterViews(services, viewManager.ViewNameSuffix);
+        RegisterValidation(services);
 
         services.AddTransient<MessageBoxView>();
 
@@ -74,6 +76,14 @@ public class MicrosoftDependencyInjectionBootstrapper<TRootViewModel> : Bootstra
 
         foreach (var viewType in viewsTypes)
             services.AddTransient(viewType);
+    }
+
+
+    private void RegisterValidation(IServiceCollection services)
+    {
+        services.AddTransient(typeof(IModelValidator<>), typeof(FluentModelValidator<>));
+
+        services.AddValidatorsFromAssemblyContaining(typeof(MicrosoftDependencyInjectionBootstrapper<>));
     }
 
 

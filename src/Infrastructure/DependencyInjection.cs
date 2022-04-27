@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Infrastructure.Localization;
 using Infrastructure.Persistence;
 using Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +10,7 @@ namespace Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    public static void AddInfrastructure(this IServiceCollection services)
     {
         services.AddDbContext<ApplicationDbContext>(ApplicationDbContextOptionsFactory.Make);
 
@@ -17,7 +18,6 @@ public static class DependencyInjection
         services.AddScoped<IReadOnlyApplicationDbContext, ReadOnlyApplicationDbContext>();
 
         services.AddTransient<IDateTimeService, DateTimeService>();
-
-        return services;
+        services.AddSingleton<ILocalizer, Localizer>();
     }
 }

@@ -10,7 +10,6 @@ public interface IReadOnlyApplicationDbContext : IAsyncDisposable, IDisposable
 {
     IQueryable<Room> Rooms { get; }
     IQueryable<RoomReport> RoomReports { get; }
-    IQueryable<Person> Persons { get; }
     IQueryable<Client> Clients { get; }
     IQueryable<Cleaner> Cleaners { get; }
     IQueryable<Floor> Floors { get; }

@@ -1,1 +1,6 @@
 Concern about Primitive Obsession (e.g. Room.Number, Client.Passport etc.)
+
+
+!! The Primitive Obsession problem must be solved
+        Apply the knowledge gained from "Quickly Solvent Design - Maxim Arshinov (DotNext 2018 Moscow)".
+        Move Domain Validation to Validators

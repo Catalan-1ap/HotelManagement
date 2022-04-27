@@ -16,10 +16,10 @@ public static class ApplicationDbInitializer
     }
 
 
-    public static void Create()
+    public static bool IsNotExists()
     {
         using var dbContext = ApplicationDbContextFactory.CreateDbContext();
 
-        dbContext.Database.Migrate();
+        return !dbContext.Database.CanConnect();
     }
 }

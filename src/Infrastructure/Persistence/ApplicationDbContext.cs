@@ -13,7 +13,6 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<Room> Rooms { get; set; } = null!;
     public DbSet<RoomReport> RoomReports { get; set; } = null!;
-    public DbSet<Person> Persons { get; set; } = null!;
     public DbSet<Client> Clients { get; set; } = null!;
     public DbSet<Cleaner> Cleaners { get; set; } = null!;
     public DbSet<Floor> Floors { get; set; } = null!;

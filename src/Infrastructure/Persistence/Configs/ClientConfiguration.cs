@@ -22,11 +22,16 @@ internal sealed class ClientConfiguration : IEntityTypeConfiguration<Client>
             .HasMaxLength(ClientStorageContract.CityMaxLength);
 
         builder
-            .HasOne(c => c.Person)
-            .WithMany(p => p.Clients)
-            .HasForeignKey(c => c.PersonId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+            .Property(c => c.FirstName)
+            .HasMaxLength(PersonStorageContract.FirstNameMaxLength);
+
+        builder
+            .Property(c => c.SurName)
+            .HasMaxLength(PersonStorageContract.SurNameMaxLength);
+
+        builder
+            .Property(c => c.Patronymic)
+            .HasMaxLength(PersonStorageContract.PatronymicMaxLength);
 
         builder
             .HasOne(c => c.Room)

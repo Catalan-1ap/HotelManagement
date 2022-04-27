@@ -30,12 +30,22 @@ namespace Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(90)
+                        .HasColumnType("nvarchar(90)");
+
+                    b.Property<string>("Patronymic")
+                        .IsRequired()
+                        .HasMaxLength(90)
+                        .HasColumnType("nvarchar(90)");
+
+                    b.Property<string>("SurName")
+                        .IsRequired()
+                        .HasMaxLength(90)
+                        .HasColumnType("nvarchar(90)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PersonId");
 
                     b.ToTable("Cleaners");
                 });
@@ -64,7 +74,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<DateTime>("Arrival")
+                    b.Property<DateTime?>("Arrival")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("City")
@@ -72,18 +82,28 @@ namespace Infrastructure.Persistence.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(90)
+                        .HasColumnType("nvarchar(90)");
+
                     b.Property<bool>("IsCheckout")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
+                    b.Property<string>("Patronymic")
+                        .IsRequired()
+                        .HasMaxLength(90)
+                        .HasColumnType("nvarchar(90)");
 
                     b.Property<string>("RoomId")
                         .HasColumnType("nvarchar(10)");
 
-                    b.HasKey("Passport");
+                    b.Property<string>("SurName")
+                        .IsRequired()
+                        .HasMaxLength(90)
+                        .HasColumnType("nvarchar(90)");
 
-                    b.HasIndex("PersonId");
+                    b.HasKey("Passport");
 
                     b.HasIndex("RoomId");
 
@@ -100,34 +120,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("Floors");
 
                     b.HasCheckConstraint("CK_Number", "[Number] > 0");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Person", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(90)
-                        .HasColumnType("nvarchar(90)");
-
-                    b.Property<string>("Patronymic")
-                        .IsRequired()
-                        .HasMaxLength(90)
-                        .HasColumnType("nvarchar(90)");
-
-                    b.Property<string>("SurName")
-                        .IsRequired()
-                        .HasMaxLength(90)
-                        .HasColumnType("nvarchar(90)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Persons");
                 });
 
             modelBuilder.Entity("Domain.Entities.Room", b =>
@@ -210,17 +202,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasCheckConstraint("CK_PricePerDay", "[PricePerDay] >= 0");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Cleaner", b =>
-                {
-                    b.HasOne("Domain.Entities.Person", "Person")
-                        .WithMany("Cleaners")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Person");
-                });
-
             modelBuilder.Entity("Domain.Entities.CleaningSchedule", b =>
                 {
                     b.HasOne("Domain.Entities.Cleaner", "Cleaner")
@@ -242,18 +223,10 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Client", b =>
                 {
-                    b.HasOne("Domain.Entities.Person", "Person")
-                        .WithMany("Clients")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Entities.Room", "Room")
                         .WithMany("Clients")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Person");
 
                     b.Navigation("Room");
                 });
@@ -310,13 +283,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Cleaners");
 
                     b.Navigation("Rooms");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Person", b =>
-                {
-                    b.Navigation("Cleaners");
-
-                    b.Navigation("Clients");
                 });
 
             modelBuilder.Entity("Domain.Entities.Room", b =>

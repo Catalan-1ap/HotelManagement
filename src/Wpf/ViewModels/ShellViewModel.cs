@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Linq;
+using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Stylet;
 using Wpf.Common;
@@ -9,18 +10,44 @@ namespace Wpf.ViewModels;
 
 public sealed class ShellViewModel : Conductor<TabScreen>.Collection.OneActive
 {
-    private readonly IServiceProvider _serviceProvider;
+    public bool IsAtLeastOneTabExists => Items.Any();
+    public bool IsNoTabs => !IsAtLeastOneTabExists;
+
+    public bool CanShowEditCleaners => CanShow<ManageCleanersViewModel>();
+    public bool CanShowEditClients => CanShow<ManageClientsViewModel>();
 
 
-    public ShellViewModel(IServiceProvider serviceProvider)
+    public void ShowEditCleaners() => OpenTab<ManageCleanersViewModel>();
+
+    public void ShowEditClients() => OpenTab<ManageClientsViewModel>();
+
+
+    public void RemoveTab()
     {
-        _serviceProvider = serviceProvider;
-        RestoreMainTab();
+        CloseItem(ActiveItem);
+        NotifyOfTabsChanges();
     }
 
 
-    public void RestoreMainTab() => ActivateItem(_serviceProvider.GetRequiredService<MainTabViewModel>());
+    public void Reload(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.OriginalSource is TabControl)
+            (ActiveItem as ILoadable)?.Load();
+    }
 
 
-    public void RemoveTab() => CloseItem(ActiveItem);
+    private bool CanShow<TTabViewModel>() where TTabViewModel : TabScreen => !Items.Any(screen => screen is TTabViewModel);
+
+
+    private void OpenTab<TTabViewModel>()
+        where TTabViewModel : TabScreen
+    {
+        var viewModel = Bootstrapper.GlobalServiceProvider.GetRequiredService<TTabViewModel>();
+
+        ActivateItem(viewModel);
+        NotifyOfTabsChanges();
+    }
+
+
+    private void NotifyOfTabsChanges() => Refresh();
 }

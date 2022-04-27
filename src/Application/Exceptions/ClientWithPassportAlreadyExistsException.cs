@@ -1,10 +1,7 @@
-﻿using System;
+﻿namespace Application.Exceptions;
 
 
-namespace Application.Exceptions;
-
-
-public sealed class ClientWithPassportAlreadyExistsException : Exception
+public sealed class ClientWithPassportAlreadyExistsException : BusinessException
 {
     public ClientWithPassportAlreadyExistsException(string passport)
         : base($"Client with passport \"{passport}\" already exists") =>

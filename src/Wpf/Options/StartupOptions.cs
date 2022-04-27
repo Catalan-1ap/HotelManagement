@@ -1,7 +1,7 @@
 ﻿namespace Wpf.Options;
 
 
-public class StartupOptions
+public sealed class StartupOptions
 {
     public const string SectionName = "Startup";
 

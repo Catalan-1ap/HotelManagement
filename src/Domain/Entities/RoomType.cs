@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using Domain.Common;
 
 
 namespace Domain.Entities;
 
 
-public sealed class RoomType : IBaseEntity
+public sealed class RoomType
 {
     public int Id { get; set; }
     public string Description { get; set; } = string.Empty;

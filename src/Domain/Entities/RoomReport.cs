@@ -1,10 +1,7 @@
-﻿using Domain.Common;
+﻿namespace Domain.Entities;
 
 
-namespace Domain.Entities;
-
-
-public sealed class RoomReport : IBaseEntity
+public sealed class RoomReport
 {
     public int Id { get; set; }
     public int DaysNumber { get; set; }

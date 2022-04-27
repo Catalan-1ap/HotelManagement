@@ -8,31 +8,81 @@
         mc:Ignorable="d"
         Style="{DynamicResource MaterialWindow}"
         Title="Главное окно приложения"
+        WindowStartupLocation="CenterScreen"
+        d:DesignWidth="500" d:DesignHeight="600"
         d:DataContext="{d:DesignInstance viewModels:ShellViewModel}">
-    <Grid>
-        <TabControl ItemsSource="{Binding Items}"
-                    SelectedItem="{Binding ActiveItem}"
-                    DisplayMemberPath="DisplayName"
-                    Style="{DynamicResource MaterialDesignTabControl}">
-            <TabControl.ContentTemplate>
-                <DataTemplate>
-                    <ContentControl s:View.Model="{Binding}"
-                                    VerticalContentAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch" IsTabStop="False" />
-                </DataTemplate>
-            </TabControl.ContentTemplate>
+    <DockPanel LastChildFill="True">
+        <DockPanel.Style>
+            <Style TargetType="{x:Type DockPanel}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsNoTabs}" Value="True">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </DockPanel.Style>
 
-            <TabControl.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Удалить вкладку" Command="{s:Action RemoveTab}" />
-                </ContextMenu>
-            </TabControl.ContextMenu>
-        </TabControl>
-    </Grid>
+        <TextBlock FontSize="24"
+                   Visibility="{Binding IsNoTabs, 
+                    Converter={StaticResource BooleanToVisibilityConverter}}">
+            Щелкните правой кнопкой мышки для выбора новой вкладки
+        </TextBlock>
+
+        <Grid
+            Visibility="{Binding IsAtLeastOneTabExists, 
+        Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TabControl ItemsSource="{Binding Items}"
+                        SelectedItem="{Binding ActiveItem}"
+                        DisplayMemberPath="DisplayName"
+                        Style="{DynamicResource MaterialDesignTabControl}"
+                        SelectionChanged="{s:Action Reload}">
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <ContentControl s:View.Model="{Binding}" IsTabStop="False" />
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+
+                <TabControl.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Просмотр">
+                            <MenuItem Header="Работники" />
+                            <MenuItem Header="Клиенты" />
+                            <MenuItem Header="Расписание уборки" />
+                        </MenuItem>
+                        <MenuItem Header="Редактирование">
+                            <MenuItem Header="Работники" Command="{s:Action ShowEditCleaners}" />
+                            <MenuItem Header="Клиенты" Command="{s:Action ShowEditClients}" />
+                            <MenuItem Header="Расписание уборки" />
+                        </MenuItem>
+                        <MenuItem Header="Отчеты">
+                            <MenuItem Header="По комнатам" />
+                            <MenuItem Header="По дате" />
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="Удалить вкладку" Command="{s:Action RemoveTab}" />
+                    </ContextMenu>
+                </TabControl.ContextMenu>
+            </TabControl>
+        </Grid>
+    </DockPanel>
 
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Начать с начала" Command="{s:Action RestoreMainTab}" />
+            <MenuItem Header="Просмотр">
+                <MenuItem Header="Работники" />
+                <MenuItem Header="Клиенты" />
+                <MenuItem Header="Расписание уборки" />
+            </MenuItem>
+            <MenuItem Header="Редактирование">
+                <MenuItem Header="Работники" Command="{s:Action ShowEditCleaners}" />
+                <MenuItem Header="Клиенты" Command="{s:Action ShowEditClients}" />
+                <MenuItem Header="Расписание уборки" />
+            </MenuItem>
+            <MenuItem Header="Отчеты">
+                <MenuItem Header="По комнатам" />
+                <MenuItem Header="По дате" />
+            </MenuItem>
         </ContextMenu>
     </Window.ContextMenu>
 </Window>
