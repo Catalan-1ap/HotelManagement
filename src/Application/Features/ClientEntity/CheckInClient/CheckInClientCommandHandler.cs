@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.Features.ClientEntity.CheckInClient;
 
 
-public sealed class CheckInClientCommandHandler : IRequestHandler<CheckInClientCommand>
+public sealed class CheckInClientCommandHandler : IRequestHandler<CheckInClientCommand, Client>
 {
     private readonly IDateTimeService _dateTimeService;
     private readonly IApplicationDbContext _dbContext;
@@ -24,7 +24,7 @@ public sealed class CheckInClientCommandHandler : IRequestHandler<CheckInClientC
     }
 
 
-    public async Task<Unit> Handle(CheckInClientCommand request, CancellationToken token)
+    public async Task<Client> Handle(CheckInClientCommand request, CancellationToken token)
     {
         var client = await TryGetClient(request.Passport, token);
         var room = await TryGetRoom(request.RoomNumber, request.Passport, token);
@@ -36,7 +36,7 @@ public sealed class CheckInClientCommandHandler : IRequestHandler<CheckInClientC
 
         await _dbContext.SaveChangesAsync(token);
 
-        return Unit.Value;
+        return client;
     }
 
 

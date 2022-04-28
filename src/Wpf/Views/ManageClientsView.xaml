@@ -51,6 +51,7 @@
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
                         <StackPanel HorizontalAlignment="Center" Margin="0 20"
+                                    Orientation="Horizontal"
                                     Visibility="{Binding IsCheckout, 
                                     Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
                             <TextBlock>
@@ -58,7 +59,7 @@
                                 <Run Text="{Binding City}" />
                             </TextBlock>
 
-                            <TextBlock Margin="25 0">
+                            <TextBlock Margin="40 0">
                                 <Run Text="Дата прибытия: " />
                                 <Run Text="{Binding Arrival, StringFormat=d}" />
                             </TextBlock>

@@ -8,6 +8,6 @@ public sealed class Floor
 {
     public int Number { get; set; }
 
-    public ICollection<Room> Rooms { get; } = new HashSet<Room>();
-    public ICollection<CleaningSchedule> Cleaners { get; } = new HashSet<CleaningSchedule>();
+    public List<Room> Rooms { get; } = new List<Room>();
+    public List<CleaningSchedule> Cleaners { get; } = new List<CleaningSchedule>();
 }

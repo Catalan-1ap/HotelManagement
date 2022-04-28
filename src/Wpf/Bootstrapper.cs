@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 using Application;
 using Application.Exceptions;
 using Develop;
+using Domain.Entities;
 using Infrastructure;
+using Mapster;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Stylet;
 using Wpf.Common;
+using Wpf.Dtos;
 using Wpf.Options;
 using Wpf.ViewModels;
 
@@ -39,6 +45,7 @@ public sealed class Bootstrapper : MicrosoftDependencyInjectionBootstrapper<Shel
 
         StartUp();
         Theming();
+        Mapping();
 
         base.Launch();
     }
@@ -72,13 +79,21 @@ public sealed class Bootstrapper : MicrosoftDependencyInjectionBootstrapper<Shel
             theme.SetPrimaryColor(SwatchHelper.Lookup[primary]);
 
         if (Enum.TryParse(themingOptions.Secondary, out MaterialDesignColor secondary))
-            theme.SetPrimaryColor(SwatchHelper.Lookup[secondary]);
+            theme.SetSecondaryColor(SwatchHelper.Lookup[secondary]);
 
         theme.AdjustColors();
 
         paletteHelper.SetTheme(theme);
     }
 
+
+    private void Mapping()
+    {
+        TypeAdapterConfig.GlobalSettings.Default.ShallowCopyForSameType(true);
+        TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
+        TypeAdapterConfig.GlobalSettings.Default.MapToConstructor(true);
+    }
+    
 
     protected override void ConfigureIoC(IServiceCollection services)
     {

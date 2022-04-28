@@ -29,8 +29,9 @@ public sealed class ManageClientsViewModel : TabScreen, ILoadable
 
     public ManageClientsViewModel() : base("Редактирование клиентов") { }
 
+
     public LoadingController LoadingController { get; set; } = null!;
-    public BindableCollection<Client> Clients { get; } = new();
+    public BindableCollection<Client> Clients { get; set; } = new();
     public Client? SelectedClient { get; set; }
     public bool CanCheckIn => SelectedClient is not null && SelectedClient.IsCheckout;
     public bool CanCheckOut => SelectedClient is not null && SelectedClient.IsCheckout == false;
@@ -70,16 +71,10 @@ public sealed class ManageClientsViewModel : TabScreen, ILoadable
             viewModel.City,
             viewModel.SelectedRoom!.Number!
         );
-        await _mediator.Send(command);
+        var updatedClient = await _mediator.Send(command);
 
-        var client = SelectedClient;
-        Clients.Remove(client);
-        LoadingController = LoadingController.StartNew(new[]
-        {
-            _dbContext.Clients
-                .FirstAsync(c => c.Passport == client.Passport)
-                .ContinueWith(task => Clients.Add(task.Result))
-        });
+        Clients.Remove(SelectedClient);
+        Clients.Add(updatedClient);
     }
 
 
@@ -88,8 +83,15 @@ public sealed class ManageClientsViewModel : TabScreen, ILoadable
         var command = new CheckOutClientCommand(SelectedClient!.Passport!);
 
         var report = await _mediator.Send(command);
-        Load();
+        
+        UpdateCheckOutedClients(report);
+        
+        ShowMessageBoxWithCheckOutDetails(report);
+    }
 
+
+    private static void ShowMessageBoxWithCheckOutDetails(CheckOutClientCommandResponse report)
+    {
         var partyInfo = report.Party.Count switch
         {
             0 => string.Empty,
@@ -114,6 +116,23 @@ public sealed class ManageClientsViewModel : TabScreen, ILoadable
                 buttons: MessageBoxButton.OK,
                 icon: MessageBoxImage.Information,
                 textAlignment: TextAlignment.Justify);
+    }
+
+
+    private void UpdateCheckOutedClients(CheckOutClientCommandResponse report)
+    {
+        var toRemove = report.Party
+            .Append(report.Payer)
+            .ToHashSet();
+
+        var toRemovePassports = toRemove
+            .Select(client => client.Passport);
+        
+        var updatedClients = Clients
+            .ExceptBy(toRemovePassports, client => client.Passport)
+            .Concat(toRemove);
+        
+        Clients = new(updatedClients);
     }
 
 

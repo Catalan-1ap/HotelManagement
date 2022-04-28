@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FluentValidation;
 using PropertyChanged;
 using Stylet;
 
@@ -8,6 +9,9 @@ namespace Wpf.Common;
 
 public class InputScreenBase : Screen
 {
+    public InputScreenBase() => Validator = new FluentModelValidator<InputScreenBase>(new InlineValidator<InputScreenBase>());
+
+
     public virtual bool CanAccept => HasErrors == false;
 
 

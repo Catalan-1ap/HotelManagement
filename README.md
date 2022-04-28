@@ -12,6 +12,7 @@ Used Stack:
 - [FluentValidation](https://github.com/FluentValidation/FluentValidation)
 - [FluentAssertions](https://github.com/fluentassertions/fluentassertions)
 - [MediatR](https://github.com/jbogard/MediatR)
+- [Mapster](https://github.com/MapsterMapper/Mapster)
 - [Stylet](https://github.com/canton7/Stylet)
 - [ConfigureAwait.Fody](https://github.com/Fody/ConfigureAwait)
 - [PropertyChanged.Fody](https://github.com/Fody/PropertyChanged)

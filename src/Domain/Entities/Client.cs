@@ -22,5 +22,5 @@ public sealed class Client
     public string? RoomId { get; set; }
     public Room? Room { get; set; }
 
-    public ICollection<RoomReport> Visits { get; } = new HashSet<RoomReport>();
+    public List<RoomReport> Visits { get; } = new List<RoomReport>();
 }

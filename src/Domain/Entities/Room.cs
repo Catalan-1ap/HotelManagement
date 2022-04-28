@@ -14,6 +14,6 @@ public sealed class Room
     public int FloorId { get; set; }
     public Floor? Floor { get; set; }
 
-    public ICollection<Client> Clients { get; } = new HashSet<Client>();
-    public ICollection<RoomReport> Reports { get; } = new HashSet<RoomReport>();
+    public List<Client> Clients { get; } = new List<Client>();
+    public List<RoomReport> Reports { get; } = new List<RoomReport>();
 }

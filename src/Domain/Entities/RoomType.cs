@@ -11,5 +11,5 @@ public sealed class RoomType
     public int MaxPeopleNumber { get; set; }
     public int PricePerDay { get; set; }
 
-    public ICollection<Room> Rooms { get; } = new HashSet<Room>();
+    public List<Room> Rooms { get; } = new List<Room>();
 }

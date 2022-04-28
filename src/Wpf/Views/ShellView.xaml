@@ -45,15 +45,9 @@
 
                 <TabControl.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Просмотр">
-                            <MenuItem Header="Работники" />
-                            <MenuItem Header="Клиенты" />
-                            <MenuItem Header="Расписание уборки" />
-                        </MenuItem>
                         <MenuItem Header="Редактирование">
                             <MenuItem Header="Работники" Command="{s:Action ShowEditCleaners}" />
                             <MenuItem Header="Клиенты" Command="{s:Action ShowEditClients}" />
-                            <MenuItem Header="Расписание уборки" />
                         </MenuItem>
                         <MenuItem Header="Отчеты">
                             <MenuItem Header="По комнатам" />
@@ -69,15 +63,9 @@
 
     <Window.ContextMenu>
         <ContextMenu>
-            <MenuItem Header="Просмотр">
-                <MenuItem Header="Работники" />
-                <MenuItem Header="Клиенты" />
-                <MenuItem Header="Расписание уборки" />
-            </MenuItem>
             <MenuItem Header="Редактирование">
                 <MenuItem Header="Работники" Command="{s:Action ShowEditCleaners}" />
                 <MenuItem Header="Клиенты" Command="{s:Action ShowEditClients}" />
-                <MenuItem Header="Расписание уборки" />
             </MenuItem>
             <MenuItem Header="Отчеты">
                 <MenuItem Header="По комнатам" />

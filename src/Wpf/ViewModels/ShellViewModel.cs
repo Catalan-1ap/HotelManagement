@@ -15,12 +15,12 @@ public sealed class ShellViewModel : Conductor<TabScreen>.Collection.OneActive
 
     public bool CanShowEditCleaners => CanShow<ManageCleanersViewModel>();
     public bool CanShowEditClients => CanShow<ManageClientsViewModel>();
-
+    
 
     public void ShowEditCleaners() => OpenTab<ManageCleanersViewModel>();
 
     public void ShowEditClients() => OpenTab<ManageClientsViewModel>();
-
+    
 
     public void RemoveTab()
     {

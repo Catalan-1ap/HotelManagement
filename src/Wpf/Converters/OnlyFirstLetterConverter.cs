@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
+using System.Linq;
 using System.Windows.Data;
 
 
 namespace Wpf.Converters;
 
 
-[ValueConversion(typeof(int), typeof(Visibility))]
-public class VisibleIfZeroConverter : IValueConverter
+[ValueConversion(typeof(string), typeof(string))]
+public class OnlyFirstLetterConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
         value switch
         {
-            0 => Visibility.Visible,
-            _ => Visibility.Hidden
+            string s => s.FirstOrDefault(),
+            _ => throw new ArgumentException($"{nameof(value)} expected type is string, but found {value.GetType()}")
         };
 
 

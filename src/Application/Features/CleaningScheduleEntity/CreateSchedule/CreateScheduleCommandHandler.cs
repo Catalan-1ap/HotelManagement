@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.Features.CleaningScheduleEntity.CreateSchedule;
 
 
-public sealed class CreateScheduleCommandHandler : IRequestHandler<CreateScheduleCommand>
+public sealed class CreateScheduleCommandHandler : IRequestHandler<CreateScheduleCommand, CleaningSchedule>
 {
     private readonly IApplicationDbContext _dbContext;
 
@@ -18,7 +18,7 @@ public sealed class CreateScheduleCommandHandler : IRequestHandler<CreateSchedul
     public CreateScheduleCommandHandler(IApplicationDbContext dbContext) => _dbContext = dbContext;
 
 
-    public async Task<Unit> Handle(CreateScheduleCommand request, CancellationToken token)
+    public async Task<CleaningSchedule> Handle(CreateScheduleCommand request, CancellationToken token)
     {
         var (floorNumber, cleanerId, workday) = request;
 
@@ -36,7 +36,7 @@ public sealed class CreateScheduleCommandHandler : IRequestHandler<CreateSchedul
         _dbContext.CleaningSchedule.Add(schedule);
         await _dbContext.SaveChangesAsync(token);
 
-        return Unit.Value;
+        return schedule;
     }
 
 
@@ -46,22 +46,22 @@ public sealed class CreateScheduleCommandHandler : IRequestHandler<CreateSchedul
 
         var isScheduleExists = new
         {
-            IsFloorExists = await _dbContext.CleaningSchedule
+            ForFloor = await _dbContext.CleaningSchedule
                 .AnyAsync(s => s.FloorId == floorNumber
                                &&
                                s.Weekday == workday,
                     token),
-            IsCleanerExists = await _dbContext.CleaningSchedule
+            ForCleaner = await _dbContext.CleaningSchedule
                 .AnyAsync(s => s.CleanerId == cleanerId
                                &&
                                s.Weekday == workday,
                     token)
         };
 
-        if (isScheduleExists.IsFloorExists)
+        if (isScheduleExists.ForFloor)
             throw new CleaningScheduleForFloorAlreadyExistsException(floorNumber, workday);
 
-        if (isScheduleExists.IsCleanerExists)
+        if (isScheduleExists.ForCleaner)
             throw new CleaningScheduleForCleanerAlreadyExistsException(cleanerId, workday);
     }
 

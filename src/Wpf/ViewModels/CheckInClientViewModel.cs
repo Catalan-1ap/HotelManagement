@@ -51,6 +51,10 @@ public sealed class CheckInClientViewModel : InputScreenBase, ILoadable
                     FreePlaces = room.RoomType!.MaxPeopleNumber - room.Clients.Count
                 })
                 .ToListAsync()
-                .ContinueWith(task => Rooms.AddRange(task.Result))
+                .ContinueWith(task =>
+                {
+                    Rooms.Clear();
+                    Rooms.AddRange(task.Result);
+                })
         };
 }

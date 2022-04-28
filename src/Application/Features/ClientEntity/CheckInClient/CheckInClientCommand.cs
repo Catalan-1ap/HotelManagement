@@ -1,7 +1,8 @@
-﻿using MediatR;
+﻿using Domain.Entities;
+using MediatR;
 
 
 namespace Application.Features.ClientEntity.CheckInClient;
 
 
-public sealed record CheckInClientCommand(string Passport, string City, string RoomNumber) : IRequest;
+public sealed record CheckInClientCommand(string Passport, string City, string RoomNumber) : IRequest<Client>;
