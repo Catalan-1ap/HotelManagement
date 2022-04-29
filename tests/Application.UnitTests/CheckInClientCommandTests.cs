@@ -26,7 +26,7 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
     {
         _dbContext = MakeContext();
 
-        _dateTimeService.UtcNow.Returns(new DateTime(2003, 2, 26));
+        _dateTimeService.Now.Returns(new DateTime(2003, 2, 26));
         _handler = new(_dbContext, _dateTimeService);
     }
 
@@ -55,7 +55,7 @@ public sealed class CheckInClientCommandTests : BaseTestHandler
 
         // Assert
         client = _dbContext.Clients.Should().Contain(c => c.Passport == request.Passport).Which;
-        client.Arrival.Should().Be(_dateTimeService.UtcNow);
+        client.Arrival.Should().Be(_dateTimeService.Now);
         client.City.Should()
             .NotBeNull()
             .And

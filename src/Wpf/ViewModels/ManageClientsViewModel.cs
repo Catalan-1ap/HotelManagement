@@ -23,12 +23,10 @@ public sealed class ManageClientsViewModel : TabScreen, ILoadable
     private readonly IReadOnlyApplicationDbContext _dbContext =
         Bootstrapper.GlobalServiceProvider.GetRequiredService<IReadOnlyApplicationDbContext>();
 
-    private readonly IMediator _mediator =
-        Bootstrapper.GlobalServiceProvider.GetRequiredService<IMediator>();
+    private IMediator _mediator = null!;
 
 
     public ManageClientsViewModel() : base("Редактирование клиентов") { }
-
 
     public LoadingController LoadingController { get; set; } = null!;
     public BindableCollection<Client> Clients { get; set; } = new();
@@ -37,7 +35,12 @@ public sealed class ManageClientsViewModel : TabScreen, ILoadable
     public bool CanCheckOut => SelectedClient is not null && SelectedClient.IsCheckout == false;
 
 
-    public void Load() => LoadingController = LoadingController.StartNew(LoadTasks());
+    public void Load()
+    {
+        _mediator = Bootstrapper.GlobalServiceProvider.GetRequiredService<IMediator>();
+
+        LoadingController = LoadingController.StartNew(LoadTasks());
+    }
 
 
     public async Task Create()
@@ -83,9 +86,9 @@ public sealed class ManageClientsViewModel : TabScreen, ILoadable
         var command = new CheckOutClientCommand(SelectedClient!.Passport!);
 
         var report = await _mediator.Send(command);
-        
+
         UpdateCheckOutedClients(report);
-        
+
         ShowMessageBoxWithCheckOutDetails(report);
     }
 
@@ -127,11 +130,11 @@ public sealed class ManageClientsViewModel : TabScreen, ILoadable
 
         var toRemovePassports = toRemove
             .Select(client => client.Passport);
-        
+
         var updatedClients = Clients
             .ExceptBy(toRemovePassports, client => client.Passport)
             .Concat(toRemove);
-        
+
         Clients = new(updatedClients);
     }
 

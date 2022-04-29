@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
 using Application;
 using Application.Exceptions;
 using Develop;
-using Domain.Entities;
+using FluentValidation;
 using Infrastructure;
 using Mapster;
 using MaterialDesignColors;
@@ -17,7 +14,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Stylet;
 using Wpf.Common;
-using Wpf.Dtos;
 using Wpf.Options;
 using Wpf.ViewModels;
 
@@ -93,12 +89,12 @@ public sealed class Bootstrapper : MicrosoftDependencyInjectionBootstrapper<Shel
         TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
         TypeAdapterConfig.GlobalSettings.Default.MapToConstructor(true);
     }
-    
+
 
     protected override void ConfigureIoC(IServiceCollection services)
     {
         services.AddApplication();
-        services.AddInfrastructure();
+        services.AddInfrastructure(ServiceLifetime.Transient);
 
         services.Configure<StartupOptions>(_configuration.GetSection(StartupOptions.SectionName));
         services.Configure<ThemingOptions>(_configuration.GetSection(ThemingOptions.SectionName));
@@ -107,20 +103,17 @@ public sealed class Bootstrapper : MicrosoftDependencyInjectionBootstrapper<Shel
 
     protected override void OnUnhandledException(DispatcherUnhandledExceptionEventArgs e)
     {
-        switch (e.Exception)
-        {
-            case BusinessException ex:
-                HandleBusinessException(ex);
-                e.Handled = true;
-                break;
-            default:
-                Environment.FailFast(e.Exception.Message);
-                break;
-        }
+        HandleException(e.Exception);
+        e.Handled = true;
+
+        if (e.Exception is (BusinessException or ValidationException))
+            return;
+
+        Environment.FailFast(e.Exception.Message);
     }
 
 
-    private void HandleBusinessException(BusinessException exception) =>
+    private void HandleException(Exception exception) =>
         ServiceProvider
             .GetRequiredService<IWindowManager>()
             .ShowMessageBox(

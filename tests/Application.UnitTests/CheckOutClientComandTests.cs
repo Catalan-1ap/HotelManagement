@@ -29,7 +29,7 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
     {
         _dbContext = MakeContext();
 
-        _dateTimeService.UtcNow.Returns(new DateTime(2003, 2, 26));
+        _dateTimeService.Now.Returns(new DateTime(2003, 2, 26));
         _handler = new(_dbContext, _dateTimeService);
     }
 
@@ -43,7 +43,7 @@ public sealed class CheckOutClientComandTests : BaseTestHandler
         var request = new CheckOutClientCommand(payer.Passport!);
 
         const int elapsedDays = 4;
-        _dateTimeService.UtcNow.Returns(_dateTimeService.UtcNow.AddDays(elapsedDays));
+        _dateTimeService.Now.Returns(_dateTimeService.Now.AddDays(elapsedDays));
 
         // Act
         var response = await _handler.Handle(request, CancellationToken.None);

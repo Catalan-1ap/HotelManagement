@@ -31,7 +31,7 @@ public sealed class CheckInClientCommandHandler : IRequestHandler<CheckInClientC
 
         client.IsCheckout = false;
         client.City = request.City;
-        client.Arrival = _dateTimeService.UtcNow;
+        client.Arrival = _dateTimeService.Now;
         client.Room = room;
 
         await _dbContext.SaveChangesAsync(token);

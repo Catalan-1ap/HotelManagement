@@ -50,8 +50,8 @@
                             <MenuItem Header="Клиенты" Command="{s:Action ShowEditClients}" />
                         </MenuItem>
                         <MenuItem Header="Отчеты">
-                            <MenuItem Header="По комнатам" />
-                            <MenuItem Header="По дате" />
+                            <MenuItem Header="По комнатам" Command="{s:Action ShowRoomReports}" />
+                            <MenuItem Header="По дате" Command="{s:Action ShowDateReport}" />
                         </MenuItem>
                         <Separator />
                         <MenuItem Header="Удалить вкладку" Command="{s:Action RemoveTab}" />
@@ -68,8 +68,8 @@
                 <MenuItem Header="Клиенты" Command="{s:Action ShowEditClients}" />
             </MenuItem>
             <MenuItem Header="Отчеты">
-                <MenuItem Header="По комнатам" />
-                <MenuItem Header="По дате" />
+                <MenuItem Header="По комнатам" Command="{s:Action ShowRoomReports}" />
+                <MenuItem Header="По дате" Command="{s:Action ShowDateReport}" />
             </MenuItem>
         </ContextMenu>
     </Window.ContextMenu>

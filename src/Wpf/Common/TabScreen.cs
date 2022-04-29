@@ -5,7 +5,7 @@ using Stylet;
 namespace Wpf.Common;
 
 
-public class TabScreen : Screen
+public abstract class TabScreen : Screen
 {
     protected TabScreen(string displayName) => DisplayName = displayName;
 

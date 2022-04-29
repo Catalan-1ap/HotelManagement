@@ -81,7 +81,8 @@ public sealed class CheckOutClientCommandHandler : IRequestHandler<CheckOutClien
 
     private RoomReport CreateReport(Client payer)
     {
-        var elapsed = (TimeSpan)(_dateTimeService.UtcNow - payer.Arrival!);
+        var now = _dateTimeService.Now;
+        var elapsed = (TimeSpan)(now - payer.Arrival!);
         var days = elapsed.Days;
 
         var report = new RoomReport
@@ -89,7 +90,9 @@ public sealed class CheckOutClientCommandHandler : IRequestHandler<CheckOutClien
             Client = payer,
             Room = payer.Room,
             DaysNumber = days,
-            TotalPrice = payer.Room!.RoomType!.PricePerDay * days
+            TotalPrice = payer.Room!.RoomType!.PricePerDay * days,
+            Arrival = payer.Arrival!.Value,
+            Depart = now
         };
 
         return report;

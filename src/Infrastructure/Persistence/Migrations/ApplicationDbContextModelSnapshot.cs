@@ -151,12 +151,18 @@ namespace Infrastructure.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<DateTime>("Arrival")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ClientId")
                         .IsRequired()
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<int>("DaysNumber")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Depart")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("RoomId")
                         .IsRequired()

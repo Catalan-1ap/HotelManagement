@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="Wpf.Views.DateReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:Wpf.ViewModels"
+             xmlns:s="https://github.com/canton7/Stylet"
+             mc:Ignorable="d"
+             Style="{DynamicResource MaterialControl}"
+             d:DesignWidth="400" d:DesignHeight="600"
+             d:DataContext="{d:DesignInstance viewModels:DateReportViewModel}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="4*" />
+        </Grid.RowDefinitions>
+
+        <Grid.Resources>
+            <Style TargetType="{x:Type DockPanel}">
+                <Setter Property="Margin" Value="15" />
+            </Style>
+
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MaterialDesignTextBlock}">
+                <Setter Property="Margin" Value="0 0 10 0" />
+                <Setter Property="DockPanel.Dock" Value="Left" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource MaterialDesignTextBox}">
+                <Setter Property="DockPanel.Dock" Value="Right" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Grid.Resources>
+
+        <DockPanel Grid.Row="0" HorizontalAlignment="Center">
+            <StackPanel DockPanel.Dock="Left">
+                <TextBlock Text="Введите начальную дату: " />
+                <DatePicker SelectedDate="{Binding From, UpdateSourceTrigger=PropertyChanged}"
+                            HorizontalAlignment="Left"
+                            MinWidth="100"
+                            Language="{Binding DatePickerLanguage, Mode=OneTime}" />
+            </StackPanel>
+
+            <StackPanel DockPanel.Dock="Right" Margin="50 0 0 0">
+                <TextBlock Text="Введите конечную дату: " />
+                <DatePicker SelectedDate="{Binding To, UpdateSourceTrigger=PropertyChanged}"
+                            HorizontalAlignment="Left"
+                            MinWidth="100"
+                            Language="{Binding DatePickerLanguage, Mode=OneTime}" />
+            </StackPanel>
+        </DockPanel>
+
+        <DockPanel Grid.Row="1">
+            <Button IsDefault="True"
+                    HorizontalAlignment="Center"
+                    Command="{s:Action Accept}">
+                Создать
+            </Button>
+        </DockPanel>
+
+        <StackPanel Grid.Row="2">
+            <StackPanel>
+                <TextBlock HorizontalAlignment="Center">
+                    <Run Text="Количество клиентов: " />
+                    <Run Text="{Binding DateReportResponse.ClientsCount}" />
+                </TextBlock>
+                <TextBlock HorizontalAlignment="Center">
+                    <Run Text="Количество дней: " />
+                    <Run Text="{Binding DateReportResponse.DaysCount}" />
+                </TextBlock>
+            </StackPanel>
+
+            <DataGrid
+                Margin="0 15 0 0"
+                AutoGenerateColumns="False"
+                CanUserAddRows="False"
+                CanUserDeleteRows="False"
+                IsReadOnly="True"
+                SelectionMode="Single"
+                ColumnWidth="*"
+                ItemsSource="{Binding DateReportResponse.RoomsDetails}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Номер комнаты" Binding="{Binding RoomNumber}" />
+                    <DataGridTextColumn Header="Общий доход" Binding="{Binding TotalIncome}" />
+                    <DataGridTextColumn Header="Занято дней" Binding="{Binding DaysRoomBusy}" />
+                    <DataGridTextColumn Header="Свободно дней" Binding="{Binding DaysRoomFree}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </Grid>
+</UserControl>

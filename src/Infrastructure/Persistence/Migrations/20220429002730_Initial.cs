@@ -135,6 +135,8 @@ namespace Infrastructure.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DaysNumber = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<int>(type: "int", nullable: false),
+                    Arrival = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Depart = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RoomId = table.Column<string>(type: "nvarchar(10)", nullable: false),
                     ClientId = table.Column<string>(type: "nvarchar(30)", nullable: false)
                 },

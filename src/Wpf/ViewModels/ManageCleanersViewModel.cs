@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Features.CleanerEntity.CreateCleaner;
@@ -27,8 +26,7 @@ public sealed class ManageCleanersViewModel : TabScreen, ILoadable
     private readonly IReadOnlyApplicationDbContext _dbContext =
         Bootstrapper.GlobalServiceProvider.GetRequiredService<IReadOnlyApplicationDbContext>();
 
-    private readonly IMediator _mediator =
-        Bootstrapper.GlobalServiceProvider.GetRequiredService<IMediator>();
+    private IMediator _mediator = null!;
 
 
     public ManageCleanersViewModel() : base("Редактирование работников") { }
@@ -43,7 +41,15 @@ public sealed class ManageCleanersViewModel : TabScreen, ILoadable
     public bool CanUnschedule => SelectedSchedule is not null;
 
 
-    public void Load() => LoadingController = LoadingController.StartNew(LoadTasks());
+    public void Load()
+    {
+        using (var scope = Bootstrapper.GlobalServiceProvider.CreateScope())
+        {
+            _mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        }
+
+        LoadingController = LoadingController.StartNew(LoadTasks());
+    }
 
 
     public async Task Add()
@@ -106,7 +112,16 @@ public sealed class ManageCleanersViewModel : TabScreen, ILoadable
         await _mediator.Send(request);
 
         cleaner.Workdays.Remove(SelectedSchedule);
+        UpdateCleaner(cleaner);
         SelectedSchedule = null;
+    }
+
+
+    private void UpdateCleaner(CleanerWithNotifier toUpdate)
+    {
+        var index = Cleaners.IndexOf(Cleaners.Single(c => c.Id == toUpdate.Id));
+
+        Cleaners[index] = toUpdate;
     }
 
 

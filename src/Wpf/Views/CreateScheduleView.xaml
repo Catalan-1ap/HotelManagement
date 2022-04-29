@@ -116,6 +116,7 @@
                                                             <TextBlock>
                                                                 <Run
                                                                     Text="{Binding Cleaner.FirstName, Converter={StaticResource OnlyFirstLetter}}" />
+                                                                <Run Text=". " />
 
                                                                 <Run
                                                                     Text="{Binding Cleaner.Patronymic, Converter={StaticResource OnlyFirstLetter}}" />

@@ -7,7 +7,7 @@ using Stylet;
 namespace Wpf.Common;
 
 
-public class InputScreenBase : Screen
+public abstract class InputScreenBase : Screen
 {
     public InputScreenBase() => Validator = new FluentModelValidator<InputScreenBase>(new InlineValidator<InputScreenBase>());
 
