@@ -23,7 +23,8 @@ public sealed class ManageClientsViewModel : TabScreen, ILoadable
     private readonly IReadOnlyApplicationDbContext _dbContext =
         Bootstrapper.GlobalServiceProvider.GetRequiredService<IReadOnlyApplicationDbContext>();
 
-    private IMediator _mediator = null!;
+    private readonly IMediator _mediator =
+        Bootstrapper.GlobalServiceProvider.GetRequiredService<IMediator>();
 
 
     public ManageClientsViewModel() : base("Редактирование клиентов") { }
@@ -37,8 +38,6 @@ public sealed class ManageClientsViewModel : TabScreen, ILoadable
 
     public void Load()
     {
-        _mediator = Bootstrapper.GlobalServiceProvider.GetRequiredService<IMediator>();
-
         LoadingController = LoadingController.StartNew(LoadTasks());
     }
 

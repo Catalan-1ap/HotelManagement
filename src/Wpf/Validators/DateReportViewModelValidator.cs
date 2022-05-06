@@ -22,8 +22,8 @@ public sealed class DateReportViewModelValidator : AbstractValidator<DateReportV
         When(m => m.To is not null && m.From is not null,
             () =>
             {
-                RuleFor(m => (DateTime)m.From)
-                    .MustBeLessThan(m => (DateTime)m.To);
+                RuleFor(m => (DateTime)m.From!)
+                    .MustBeLessThan(m => (DateTime)m.To!);
             });
     }
 }

@@ -26,7 +26,8 @@ public sealed class ManageCleanersViewModel : TabScreen, ILoadable
     private readonly IReadOnlyApplicationDbContext _dbContext =
         Bootstrapper.GlobalServiceProvider.GetRequiredService<IReadOnlyApplicationDbContext>();
 
-    private IMediator _mediator = null!;
+    private readonly IMediator _mediator =
+        Bootstrapper.GlobalServiceProvider.GetRequiredService<IMediator>();
 
 
     public ManageCleanersViewModel() : base("Редактирование работников") { }
@@ -41,15 +42,7 @@ public sealed class ManageCleanersViewModel : TabScreen, ILoadable
     public bool CanUnschedule => SelectedSchedule is not null;
 
 
-    public void Load()
-    {
-        using (var scope = Bootstrapper.GlobalServiceProvider.CreateScope())
-        {
-            _mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        }
-
-        LoadingController = LoadingController.StartNew(LoadTasks());
-    }
+    public void Load() => LoadingController = LoadingController.StartNew(LoadTasks());
 
 
     public async Task Add()

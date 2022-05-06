@@ -15,7 +15,6 @@ namespace Application.Features.DateReport;
 public sealed class DateReportQueryHandler : IRequestHandler<DateReportQuery, DateReportResponse>
 {
     private readonly IReadOnlyApplicationDbContext _dbContext;
-    private Expression<Func<RoomReport, bool>> _dateInRange;
 
 
     public DateReportQueryHandler(IReadOnlyApplicationDbContext dbContext) => _dbContext = dbContext;
@@ -23,14 +22,14 @@ public sealed class DateReportQueryHandler : IRequestHandler<DateReportQuery, Da
 
     public async Task<DateReportResponse> Handle(DateReportQuery request, CancellationToken token)
     {
-        _dateInRange = r =>
+        Expression<Func<RoomReport, bool>> dateInRange = r =>
             r.Arrival >= request.From
             && r.Arrival <= request.To
             && r.Depart >= request.From
             && r.Depart <= request.To;
 
         var clientsCount = await _dbContext.RoomReports
-            .Where(_dateInRange)
+            .Where(dateInRange)
             .Select(r => r.ClientId)
             .Distinct()
             .CountAsync(token);
@@ -38,7 +37,7 @@ public sealed class DateReportQueryHandler : IRequestHandler<DateReportQuery, Da
         var daysCount = (request.To - request.From).Days;
 
         var roomsDetails = await _dbContext.RoomReports
-            .Where(_dateInRange)
+            .Where(dateInRange)
             .GroupBy(r => r.RoomId)
             .Select(reports => new
             {
